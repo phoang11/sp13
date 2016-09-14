@@ -1,0 +1,382 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 8.1</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 8.1</strong><br />
+            <strong>jQuery Mega Menu</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong>Objectives</strong></div></div><div class="ExRow"><div class="ExText"><strong>Our department SharePoint site is really coming along! The team has asked you to improve the menu system to make content easier to find. The solution: mega menu!</strong></div></div><div class="ExRow"><div class="ExText"><strong><p>In this exercise, you will</p><ul><li>Configure navigation settings</li><li>Design the mega menu appearance</li><li>Create CSS attributes</li><li>Build the mega menu</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Configuring navigation settings</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="a2254r0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        If not already open, open Internet Explorer and go to your department's site.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i><code>http://<em>[island]</em>.msc.com/sites/<em>[department]</em></code></i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="a2254r1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Settings</strong> <strong>| Site Settings</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 28px;"><img src="images/1533-B1-8-1-2.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="a2254r2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Under Site Actions, click <b>Manage site features</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="a2254r3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Scroll down the page to SharePoint Server Publishing. Click <b>Activate</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 867px;"><img src="images/p3img12.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="a2254r4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Go back to the Site Settings page.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="a2254r5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Under "Look and Feel," select <b>Navigation</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="a2254r6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        On the Navigation Settings page, change the Global Navigation to <b>Structural Navigation</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="a2254r7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the box next to <b>Show subsites</b> and deselect <b>Show pages</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 964px;"><img src="images/p3img11.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="a2254r8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Current Navigation area, select <b>Structural Navigation: Display only the navigation items below the current site</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 942px;"><img src="images/p3img10.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="a2254r9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Scroll down the page to the Structural Navigation: Editing and Sorting section.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="a2254r10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Global Navigation</b>, then click <b>Add Heading</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 473px;"><img src="images/p3img9.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="a2254r11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Complete the Navigation Heading dialog with the following values:</p><p> </p><p>Title: <code><strong>Regional Departments</strong></code><br />
+URL: <code><strong>#</strong></code></p><p> </p><p>Click <strong>OK</strong>.</p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 682px;"><img src="images/p3img8.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="a2254r12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        With the <b>Regional Departments</b> heading highlighted, click <b>Add link</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="a2254r13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add the following links (click <b>OK</b> after each row and save often to keep from losing all your work):
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <table border="1" cellpadding="8" cellspacing="0" style="width:400px"><tbody><tr><td><strong>Title</strong></td><td><strong>URL</strong></td></tr><tr><td>Agriculture</td><td><p><code>/agriculture</code></p></td></tr><tr><td>Education</td><td><code>/education</code></td></tr><tr><td>Finance</td><td><code>/finance</code></td></tr><tr><td>Government</td><td><code>/government</code></td></tr><tr><td>Healthcare</td><td><code>/healthcare</code></td></tr><tr><td>IT</td><td><code>/it</code></td></tr><tr><td>Real Estate</td><td><code>/realestate</code></td></tr><tr><td>Tourism</td><td><code>/tourism</code></td></tr></tbody></table>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 432px;"><img src="images/p3img7.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="a2254r14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Add the navigation marker that we will pick up with our jQuery script. Click <strong>Add Link</strong> and enter the following:</p><p> </p><p>Title: <code><strong>#NAV#Departments</strong></code></p><p>URL: <strong><code>http://home.msc.com/PublishingImages/Team.png</code></strong></p><p>Description: <code><strong>Listing of MSC regional </strong><strong>department sites.</strong></code></p><p> </p><p>and click <strong>OK</strong>.</p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="a2254r15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Add another heading. Set these values for the heading:</p><p> </p><p>Title: <code><strong>Useful Links</strong></code></p><p>URL: <code><strong>#</strong></code></p><p> </p><p>and click <strong>OK</strong>.</p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="a2254r16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Useful Links</b> to select the heading, then click <b>Add link</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="a2254r17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add the following links and set each one so it opens in a new window, and save often:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <table border="1" cellpadding="8" cellspacing="0" style="width:85%"><tbody><tr><td style="width: 20%;"><strong>Title</strong></td><td style="width: 80%;"><strong>URL</strong></td></tr><tr><td>Google</td><td><code>http://www.google.com</code></td></tr><tr><td>Dining</td><td><code>http://www.yelp.com/honolulu</code></td></tr><tr><td>Travel</td><td><code>http://www.regaltravel.com</code></td></tr></tbody></table>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 757px;"><img src="images/p3img6.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="a2254r18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Add the navigation marker that we will pick up with our jQuery. Click <strong>Add Link</strong> and enter the following:</p><p> </p><p>Title: <code><strong>#NAV#Links</strong></code></p><p>URL: <strong><code>http://home.msc.com/PublishingImages/Links.png</code></strong></p><p>Description: <code><strong>Useful links for MSC business.</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 168px;"><img src="images/p3img5.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  and click <strong>OK</strong>.
+              </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="a2254r19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Scroll down the Navigation Settings page, and click <b>OK</b> to save your navigation changes.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="a2254r20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Site Contents</b> in the Quick Launch.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="a2254r21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Go to the Site Assets library.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="a2254r22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Upload the <code>Menu.txt</code> file from the <code>c:\Course Files</code> folder.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="a2254r23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        One of the simplest methods for adding script to a SharePoint page is to use the Content Editor Web Part. Go back to your site's home page and click <b>EDIT</b> in the upper right corner.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="a2254r24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click above the Local Weather app, then select the <b>INSERT</b> tab from the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="a2254r25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Web Part</b> from the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="a2254r26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        From the Categories menu, select <b>Media and Content</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="a2254r27" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Content Editor</b> in the Parts menu, then click <b>Add</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="a2254r28" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the <b>Edit Web Part</b> properties pane for the Content Editor Web Part.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 296px;"><img src="images/p3img4.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="a2254r29" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Edit the Content link by clicking the ellipsis and entering:</p><p> </p><p><code><strong>http://<em>[island]</em>.msc.com/sites/<em>[department]</em>/SiteAssets/Menu.txt</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="a2254r30" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Expand the <b>Appearance</b> section of the Content Editor properties and set the title to <code><b>Mega Menu</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="a2254r31" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Chrome Type to <b>None</b> and click <b>OK</b> at the bottom of the Properties pane.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="a2254r32" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save your changes by clicking <b>Save</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="a2254r33" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Refresh the page and hover over the Regional Departments and Useful Links items in the Global Navigation.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 659px;"><img src="images/p3img3.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  Cool!
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>This method works well at an individual site level, but it is not recommended for multiple sites or public-facing SharePoint implementations.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="a2254r34" /></div><div class="ExRight" style="vertical-align:baseline;">
+        This is nice. Let's make it better! Open your site in Designer if it is not already open.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>If Designer was already open, click the Refresh button in the Quick Access Toolbar to refresh the site contents.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="a2254r35" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>All Files</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="a2254r36" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Site Assets</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="a2254r37" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open <code>Menu.txt</code>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="a2254r38" /></div><div class="ExRight" style="vertical-align:baseline;">
+        On the <code>Menu.txt</code> Designer page, click <strong>Edit File</strong> in the Customization section.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="a2254r39" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Scroll down to the bottom of the file to the CSS tag called <code>UL.featuredNavigation</code> on line 86.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="a2254r40" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place your cursor at the end of the width attribute, line 88, and press <code>&lt;Enter&gt;</code> to make a new line.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="a2254r41" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>To smooth out the corners, verify the following CSS3 attribute:</p><p> </p><p><strong><code>border-radius:10px;</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="a2254r42" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save the script.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Your changes are saved and immediately visible in SharePoint.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="a2254r43" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Leaving Designer open, switch back to your home page in Internet Explorer and refresh the page.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="a2254r44" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Hover over the Regional Departments. The mega menu should now look like this:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 541px;"><img src="images/p3img2.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="a2254r45" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Almost there. We can make one more CSS change to really make our menu smooth. Go back to Designer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="a2254r46" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Add a new line after the <code>border-radius</code> attribute and type the following:</p><p> </p><p><strong><code>opacity:0.95;</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>Feel free to adjust the opacity. 95 percent is a nice balance.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="a2254r47" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Again, save your work. Switch back to your home page in Internet Explorer and refresh.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="a2254r48" /></div><div class="ExRight" style="vertical-align:baseline;">
+        When you hover over your menu items, it should appear a little transparent, like this:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 534px;"><img src="images/p3img1.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You just created a styled mega menu.</strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exBonus.jpg" /></div><div class="ExRight"><strong>Adjust the opacity, border radius, and the mega menu background color and font. Have fun with it!</strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>A special congratulations! You have come a long way since Chapter 1.</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

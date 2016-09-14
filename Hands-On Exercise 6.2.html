@@ -1,0 +1,201 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 6.2</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 6.2</strong><br />
+            <strong>Connecting SQL Server Data to Outlook</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong><p>Objective</p><p> </p><p>Connect the customer's data from SQL Server to Microsoft Outlook</p><p> </p><p>In this exercise, you will</p><ul><li>Connect the new Customer list to Microsoft Outlook</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Connecting the new Customer list to Microsoft Outlook</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="bsktvm0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Using Internet Explorer, open your island's SharePoint site at <strong><code>http://<em>[island]</em>.msc.com/sites/<em>[department]</em></code></strong>, where <em><code>[island]</code></em> is the name of your island and <em><code>[department]</code></em> is your department name.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="bsktvm1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        From the site, click <b>Site Settings | Site Actions section | Manage Site Features</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>To connect an external list to Outlook (or other Office products), the "Offline Synchronization for External Lists" feature needs to be turned on.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="bsktvm2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Scroll down to the <strong>Offline Synchronization for External Lists</strong> feature and click <strong>Activate</strong> if it is not already activated.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 919px;"><img src="images/p2img20.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="bsktvm3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Navigate back to the external list by clicking <b>Customers</b> in the Lists section of the Quick Launch.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 325px;"><img src="images/p2img19.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="bsktvm4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>LIST</strong> tab in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="bsktvm5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Connect to Outlook</strong> in the Connect &amp; Export group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 727px;"><img src="images/p2img18.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>If the "Connect to Outlook" button is disabled, press <code>&lt;F5&gt;</code> to refresh the page and try again.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="bsktvm6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        If this is the first time connecting SharePoint 2013 with MS Office 2013, SharePoint will install a Microsoft Office customization. Follow the prompts and click <b>Install</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 603px;"><img src="images/p2img17.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 728px;"><img src="images/p2img16.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="bsktvm7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Close</b> once the installer is done.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="bsktvm8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Outlook will open to the new MSC Customer's contact list. Browse around a bit to see what customer information is available.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 929px;"><img src="images/p2img15.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Outlook will also add a menu item in the footer linking to this and future SharePoint content.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 804px;"><img src="images/p2img14.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You just connected a SQL Server table to an MS Outlook contacts list.</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

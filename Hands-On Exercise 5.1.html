@@ -1,0 +1,430 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 5.1</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 5.1</strong><br />
+            <strong>Budget Approval Process</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong><p>Objectives</p><p> </p><p>The chief financial officer (CFO) is enforcing policies to control spending on internal MSC projects, like opening a new location, launching a marketing campaign, or acquiring other consulting companies.</p><p> </p><p>To support the CFO, each department has been tasked with implementing an MSC Project Budget Approval process.</p><p> </p><p>The built-in workflow task content type has two choices: Approve and Reject. We want to not just approve documents but also to mark them as Complete or Incomplete.</p><p> </p><p>To do this, we will need a custom 2013 workflow approval content type.</p><p> </p><p>In this exercise, you will</p><ul><li>Create the Internal Project Budget Content Type</li><li>Use an Internal Project Budget content type and library</li><li>Add a custom workflow approval content type</li><li>Create a workflow task content type</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Create the Internal Project Budget Content Type</strong></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>In the Time Off Approval workflow, we used a list content type. In this exercise, we will create a document content type for our Budget Approval Process</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="oacbmm0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your department site in SharePoint Designer 2013.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="oacbmm1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Site Columns</b> in the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="oacbmm2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Create the first site column by clicking <strong>New Column</strong> in the New section of the ribbon and selecting <strong>Single line of text</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="oacbmm3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Enter the following in the "Create a Site Column" dialog box and click <strong>OK</strong>:</p><p> </p><p>Name: <code><strong>Project Name</strong></code></p><p>New Group: <code>_<em><strong>[Department]</strong></em></code></p><p> </p><p>Click <strong>OK</strong>.</p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="oacbmm4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save your work by clicking the <strong>Save</strong> button or pressing <code>&lt;Ctrl&gt;&lt;S&gt;</code>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="oacbmm5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Add the following site columns and add them to the existing site column group <code>_<em>[Department]</em></code>:</p><p> </p><table border="1" cellpadding="8" cellspacing="0" style="width:80%"><tbody><tr><td><strong>Name</strong></td><td><strong>Type</strong></td></tr><tr><td><strong><code>Project Cost</code></strong></td><td>Currency</td></tr><tr><td><strong><code>Project Start Date</code></strong></td><td>Date &amp; Time</td></tr><tr><td><code><strong>Project End Date</strong></code></td><td>Date &amp; Time</td></tr><tr><td><code><strong>Project Budget Due Date</strong></code></td><td>Date &amp; Time</td></tr><tr><td><code><strong>Project Business Case</strong></code></td><td>Yes/No</td></tr></tbody></table>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="oacbmm6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Save</strong> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="oacbmm7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Content Types</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="oacbmm8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Content Type</b> in the New section of the ribbon to create a new content type.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="oacbmm9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the "Create a Content Type" dialog box, enter the following:</p><p> </p><p>Name: <code><strong>Internal Project Budget</strong></code><br />
+Select parent content type from: <strong>Document Content Types</strong></p><p>Select parent content type: <strong>Document</strong></p><p>New group: <code><strong>_<em>[Department]</em></strong></code></p><p> </p><p>Click <strong>OK</strong>.</p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="oacbmm10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>Internal Project Budget</strong> content type you just created in the Content Types list.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="oacbmm11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        On the Internal Project Budget content type tab in Designer, click <strong>Edit content type columns </strong>in the Customization section.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="oacbmm12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Add Existing Site Column</b> from the New section of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="oacbmm13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        From the Site Column Picker dialog, double-click the <strong>Project Name</strong> site column.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="oacbmm14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Add the remaining Time Off columns by repeating the above steps in the following order:</p><p> </p><p>Project Cost</p><p>Project Start Date</p><p>Project End Date</p><p>Project Budget Due Date</p><p>Project Business Case</p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>If your Add Existing Site Column button is disabled in the ribbon, click anywhere in the Columns editor.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="oacbmm15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Use an Internal Project Budget content type and library</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="oacbmm16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Lists and Libraries</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 252px;"><img src="images/p2img218.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="oacbmm17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Document Library</b> in the New group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="oacbmm18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Document Library</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 288px;"><img src="images/p2img217.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="oacbmm19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Name the library <code><b>Internal Projects Documents</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="oacbmm20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="oacbmm21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Internal Projects Documents</b> library from the Document Libraries list.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 333px;"><img src="images/p2img216.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="oacbmm22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the checkbox next to <b>Display this list on the Quick Launch</b> in the Settings section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 377px;"><img src="images/p2img215.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="oacbmm23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the box next to <b>Allow management of content types</b> in the Settings section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 439px;"><img src="images/p2img214.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="oacbmm24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="oacbmm25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add</b> button in the Content Types section of the library settings page.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 492px;"><img src="images/p2img213.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="oacbmm26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>the Internal Project Budget</b> from the Content Type Picker dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The Internal Project Budget content type is located in the MSC content type group.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 446px;"><img src="images/p2img212.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="oacbmm27" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="oacbmm28" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>Document</b> content type by clicking to the right of the word "Document."
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 477px;"><img src="images/p2img211.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="oacbmm29" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>Delete</strong> button in the r<span style="line-height:1.6">ibbon.</span>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 307px;"><img src="images/p2img210.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="oacbmm30" /></div><div class="ExRight" style="vertical-align:baseline;">
+        A Confirm Delete dialog will open. Click <b>Yes</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 469px;"><img src="images/p2img209.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Adding a custom workflow approval content type</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="oacbmm31" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In SharePoint Designer, select <b>Site Columns</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 297px;"><img src="images/p2img208.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="oacbmm32" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>New Column</strong> from the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="oacbmm33" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Choose <b>Task Outcome</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 458px;"><img src="images/p2img207.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="oacbmm34" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Create a Site Column" dialog, set the following values:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <p>Name: <code><strong>Project Document Task Outcome</strong></code></p><p>Group: <strong>_<em>[Department]</em></strong></p>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 414px;"><img src="images/p2img206.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="oacbmm35" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The Column Editor dialog will open.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="oacbmm36" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Column Editor dialog, replace the <b>Choices</b> values with the following:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <p>Choices: <code><strong>Incomplete</strong></code></p><p><code><strong>         Complete</strong><br /><strong>         Recall</strong></code></p>
+              </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="oacbmm37" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the "Default value" to <code><b>Incomplete</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="oacbmm38" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Clear the box next to "Allow blank values?".
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 390px;"><img src="images/p2img205.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="oacbmm39" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="oacbmm40" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Creating a workflow task content type</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="oacbmm41" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Content Types</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 285px;"><img src="images/p2img204.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="oacbmm42" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Content Type</strong> in the new group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 46px;"><img src="images/1533-5-1.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="oacbmm43" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the following values in the "Create a Content Type" dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <p>Name: <code><strong>Project Document Workflow Task</strong></code></p><p>Parent content type from: <strong>List Content Types</strong></p><p>Parent content type: <strong>Workflow Task (SharePoint 2013)</strong></p><p>Existing group: <strong>_[<em>Department</em>]</strong></p>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 663px;"><img src="images/p2img203.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="oacbmm44" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="oacbmm45" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>Project Document Workflow Task</b> from the Content Types list.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 346px;"><img src="images/p2img202.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The Project Documents Workflow Task tab will open in Designer.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="oacbmm46" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Edit content type columns</b> in the Customization section of the page.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 319px;"><img src="images/p2img201.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="oacbmm47" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>Task Outcome</b> column.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 291px;"><img src="images/p2img200.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="oacbmm48" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>Delete</strong> button in the Edit group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 49px;"><img src="images/1533-5-1-delete.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        50.
+        <input type="checkbox" id="oacbmm49" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Save</b> button to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        51.
+        <input type="checkbox" id="oacbmm50" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Add Existing Site Column</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 61px;"><img src="images/1533-5-1-add.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        52.
+        <input type="checkbox" id="oacbmm51" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Site Column Picker dialog, select <b>Project Document Task Outcome</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 607px;"><img src="images/p2img199.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        53.
+        <input type="checkbox" id="oacbmm52" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        54.
+        <input type="checkbox" id="oacbmm53" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        55.
+        <input type="checkbox" id="oacbmm54" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Right-click the <b>Project Document Workflow Task</b> tab.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        56.
+        <input type="checkbox" id="oacbmm55" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Close All Tabs</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 441px;"><img src="images/p2img198.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You have created a new type of content type available in SharePoint 2013 for customized workflow task outcomes.</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

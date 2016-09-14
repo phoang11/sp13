@@ -1,0 +1,287 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 5.4</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 5.4</strong><br />
+            <strong>Workflow Quick Step</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong><p>Objective</p><p> </p><p>We expect the Time Off Request process to be a well-used one. The CEO wants "one button" to start the process going. What the CEO wants, the CEO gets.</p><p> </p><p>We'll meet the CEO's requirement for a Time Off Request button using a SharePoint Quick Step.</p><p> </p><p>In this exercise, you will</p><ul><li>Build a Quick Step button to trigger the time-off request approval process</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Building a Quick Step button</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="nkbxgb0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your <strong>Time Off Request</strong> list in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="nkbxgb1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>LIST</strong> tab in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 302px;"><img src="images/p2img82.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="nkbxgb2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>New Quick Step </strong>in the Customize List group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 330px;"><img src="images/p2img81.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="nkbxgb3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        A warning dialog will appear. Click <b>Allow</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>SharePoint Designer will open with the "Add a Button" dialog.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="nkbxgb4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>Start an existing workflow</b> radio button.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 676px;"><img src="images/p2img80.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="nkbxgb5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the value of the Button Label to <code><b>Time Off</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="nkbxgb6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the Button Image value to the following URL:</p><p> </p><p><strong><code>http://home.msc.com/Site%20Images/QStep.jpg</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 683px;"><img src="images/p2img79.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="nkbxgb7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The Time Off Request Process workflow will open in Designer.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="nkbxgb8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Publish </strong>in the ribbon to publish the workflow.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="nkbxgb9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Lists and Libraries</b> from the Site Objects menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 263px;"><img src="images/p2img78.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="nkbxgb10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Time Off Requests</b> from the list.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 346px;"><img src="images/p2img77.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="nkbxgb11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <strong>Preview in Browser</strong> from the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="nkbxgb12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select a time-off request.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 430px;"><img src="images/p2img76.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="nkbxgb13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>ITEMS</strong> tab in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The new Quick Step to start a time-off request is now visible in the ribbon. Do not click this button!</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 138px;"><img src="images/p2img75.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Moving the Time Off Quick Step to the Workflow ribbon group</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="nkbxgb14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the <b>Time Off Requests</b> library in Designer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="nkbxgb15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Time Off</b> in the Custom Actions section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 508px;"><img src="images/p2img74.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="nkbxgb16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Scroll to the bottom half of the Create Custom Action dialog so that the <b>Advanced custom action options</b> are visible.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 526px;"><img src="images/p2img73.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="nkbxgb17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Change the Ribbon Location field to the following:</p><p> </p><p><code>Ribbon.ListItem.<strong>Workflow</strong>.Controls._children</code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="nkbxgb18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the sequence number to <code><b>100</b></code>. The dialog should look like this:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 471px;"><img src="images/p2img72.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="nkbxgb19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Changing the Time Off Request workflow start option</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="nkbxgb20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Time Off Request Process</b> in the Workflow section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 630px;"><img src="images/p2img71.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="nkbxgb21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Clear the box for "Start workflow automatically when an item is created" in the Start Options section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 485px;"><img src="images/p2img70.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Time-off requests will now begin when the Quick Step is clicked.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="nkbxgb22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Publish the Time Off Request Process.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="nkbxgb23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        To test, go to the Time Off Request list in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="nkbxgb24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the checkbox on the left side of an existing request, and click the <strong>Time Off Request</strong> button in the ribbon. This will relaunch a previous request.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="nkbxgb25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Once you have test-launched a Time Off Request workflow, go back to SharePoint 2013 Designer. Right-click any tab in Designer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="nkbxgb26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Close All Tabs</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 269px;"><img src="images/p2img69.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Why disable the auto-start process for the workflow? Doing so gives the employees of MSC control over when they submit their requests. It also allows them to submit requests in batches as needed.</i></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exBonus.jpg" /></div><div class="ExRight"><strong>Change the behavior of the Time Off Quick Step from starting the workflow to creating a new Time Off Request when clicked.</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

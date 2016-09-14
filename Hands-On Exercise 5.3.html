@@ -1,0 +1,544 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 5.3</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 5.3</strong><br />
+            <strong>Workflow Recall With Parallel Processes</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong><p>Objectives</p><p> </p><p>MSC needs an update to the Internal Project Budget review process. Budget submitters need a way to recall the budget during the manager review cycle.</p><p> </p><p>In this exercise, you will</p><ul><li>Create a budget recall process using a parallel workflow</li><li>Test the workflow</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Creating a budget recall process using a parallel workflow</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="cacix10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your <b>Internal Project Budget Review</b> workflow in Designer if it is not already open.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="cacix11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Edit Workflow</b> in the Customization section of the page.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="cacix12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor above the <b>Budget Review</b> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 342px;"><img src="images/p2img127.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="cacix13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Parallel Block</strong> in the Insert group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 514px;"><img src="images/p2img126.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="cacix14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>Budget Review</b> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 828px;"><img src="images/p2img125.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="cacix15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Right-click the <b>Step</b> header and select <b>Move Up</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 638px;"><img src="images/p2img124.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The entire Budget Review step is moved into the parallel block.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="cacix16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Right-click the top of the <b>parallel</b> block.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 426px;"><img src="images/p2img123.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="cacix17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Advanced Properties</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 516px;"><img src="images/p2img122.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="cacix18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Properties dialog, set the Completion Condition to <b>Create a new variable</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="cacix19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Name field to <code><strong>CanBeRecalled</strong></code> in the Edit Variable dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 267px;"><img src="images/p2img121.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="cacix110" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="cacix111" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> on the Properties dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="cacix112" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor above the <b>Assign a task</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 365px;"><img src="images/p2img120.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="cacix113" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Set Workflow Variable</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="cacix114" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>workflow variable</strong></u> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="cacix115" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Variable: CanBeRecalled</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 322px;"><img src="images/p2img119.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="cacix116" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>value</strong></u> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="cacix117" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Yes</b> from the pull-down menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Setting the <code>CanBeRecalled</code> variable to <code>Yes</code> tells Designer that if any of the steps in the parallel process terminate (Rejected/Recalled), all of the steps terminate.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="cacix118" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor below the <b>Budget Review </b>step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 358px;"><img src="images/p2img118.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="cacix119" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Step</strong> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 460px;"><img src="images/p2img117.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="cacix120" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Name the new step <code><b>Recall Process<br /></b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="cacix121" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor in the <b>Recall Process</b> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 406px;"><img src="images/p2img116.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="cacix122" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add an <b>Assign a Task</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="cacix123" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>this user</strong></u> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="cacix124" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Assign a Task" dialog, set the following:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <p>Participant: <strong>[<em>User who created current item</em>]</strong></p><p>Task Title: <strong><code>Internal Project Budget: Recall Budget</code></strong></p><p>Description: <strong><code>If you need to recall/cancel your project budget edit this task and click the Recall button.</code></strong></p>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 602px;"><img src="images/p2img115.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="cacix125" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the inverted chevron next to the words <b>Outcome Options</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 256px;"><img src="images/p2img114.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="cacix126" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the "Task content type" to <b>Project Document Workflow Task</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="cacix127" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Default outcome to <b>Complete</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 628px;"><img src="images/p2img113.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="cacix128" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="cacix129" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>Variable: Outcome</strong></u> link in the "Assign a Task" action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="cacix130" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Create a new variable</b> from the pull-down menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 324px;"><img src="images/p2img112.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="cacix131" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Name value to <code><b>Recall Outcome</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 267px;"><img src="images/p2img111.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="cacix132" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="cacix133" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="cacix134" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor below the <b>Assign a Task</b> action in the Recall Process step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 377px;"><img src="images/p2img110.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="cacix135" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Log to History List</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="cacix136" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>message</strong></u> link in the "Log to History List" action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="cacix137" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the message to:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <strong><code>The internal project budget has been canceled.</code></strong>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 337px;"><img src="images/p2img109.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="cacix138" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work and click <b>Publish</b> to publish the workflow.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="cacix139" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Go to the <b>Internal Project Budget Review</b> workflow summary page of the Internal Project Budget Review workflow.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="cacix140" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Open Task List</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="cacix141" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the default content type to <b>Workflow Task (SP2013)</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="cacix142" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the ribbon, click <strong>Publish</strong> to publish the workflow.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Testing the workflow</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="cacix143" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Lists and Libraries</b> in the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 252px;"><img src="images/p2img108.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="cacix144" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Internal Project Documents</b> in the Document Libraries section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 319px;"><img src="images/p2img107.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="cacix145" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Preview in Browser</strong> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 436px;"><img src="images/p2img106.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The Internal Projects Documents section will open in Internet Explorer.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 625px;"><img src="images/p2img105.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="cacix146" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>FILES</strong> in the ribbon tabs.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 271px;"><img src="images/p2img104.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="cacix147" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>New Document</strong> in the New group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 310px;"><img src="images/p2img103.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="cacix148" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Yes</strong> in the Microsoft Office warning dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 616px;"><img src="images/p2img102.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Microsoft Word 2013 opens with a new Internal Project Budget document.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        50.
+        <input type="checkbox" id="cacix149" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Enter the following test data in the Internal Project Budget Properties pane:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <p>Title: <code><strong>MSC North Shore Project Budget</strong></code></p><p>Project Name: <code><strong>North Shore Project</strong></code></p><p>Project Cost: <code><strong>50000</strong></code></p><p>Project Start Date: <code><strong>[Enter tomorrow's date]</strong></code></p><p>Project End Date: <code><strong>[Enter a date 6 months </strong><strong>in the future]</strong></code><br />
+Project Budget Due Date: <code><strong>[Enter the date of next Monday]</strong></code></p>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 990px;"><img src="images/p2img101.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        51.
+        <input type="checkbox" id="cacix150" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the document, enter <code><b>We need $50,000 for Environmental cleanup after drilling</b></code>, and click <b>Save</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        52.
+        <input type="checkbox" id="cacix151" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Other Web Locations</b> in the Save As menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 374px;"><img src="images/p2img100.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        53.
+        <input type="checkbox" id="cacix152" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Browse</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 155px;"><img src="images/p2img99.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        54.
+        <input type="checkbox" id="cacix153" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Name the file <code><b>MSC North Shore Project Budget</b></code> in the Save As dialog, then click <b>Save</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 738px;"><img src="images/p2img98.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        55.
+        <input type="checkbox" id="cacix154" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Close Microsoft Word.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        56.
+        <input type="checkbox" id="cacix155" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Refresh the Internal Projects Document page in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>If you get the following warning message, click <strong>Retry</strong>.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 564px;"><img src="images/p2img97.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        57.
+        <input type="checkbox" id="cacix156" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Manager Review Cycle</b> link in the Internal Project Budget Review column.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>It may take up to a minute before the Manager Review Cycle is visible in the Internal Project Budget Review column.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 299px;"><img src="images/p2img96.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Verify that the workflow has started.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 468px;"><img src="images/p2img95.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        58.
+        <input type="checkbox" id="cacix157" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your inbox in Outlook.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>You will receive two e-mails since you are playing both the submitter and the manager role.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        59.
+        <input type="checkbox" id="cacix158" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the e-mail with the subject <b>Task Assigned – Internal Project Budget: Manager Review Requested.</b>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        60.
+        <input type="checkbox" id="cacix159" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>Internal Project Budget: Manager Review Requested</strong></u> link.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 660px;"><img src="images/p2img94.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The Manager Review task will open in Internet Explorer.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        61.
+        <input type="checkbox" id="cacix160" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Edit Item</strong> in the Manage group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        62.
+        <input type="checkbox" id="cacix161" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Rejected</b> at the bottom of the page.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>If the Content Type field is set to Project Document Workflow Task, change it to Workflow Task (SharePoint 2013).</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 643px;"><img src="images/p2img93.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 833px;"><img src="images/p2img92.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        63.
+        <input type="checkbox" id="cacix162" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Close Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        64.
+        <input type="checkbox" id="cacix163" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the new e-mail in Outlook with the subject <b>Task Assigned – Internal Project Budget: Update Requested by Manager</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>It may take up to a minute to receive this e-mail (usually less than a minute).</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 438px;"><img src="images/p2img91.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        65.
+        <input type="checkbox" id="cacix164" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the link <u><strong>Internal Project Budget: Update Requested by Manager</strong></u>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        66.
+        <input type="checkbox" id="cacix165" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Edit Item</strong> in the ribbon in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        67.
+        <input type="checkbox" id="cacix166" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Complete</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 869px;"><img src="images/p2img90.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        68.
+        <input type="checkbox" id="cacix167" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Close Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        69.
+        <input type="checkbox" id="cacix168" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the e-mail in Outlook with the subject <b>Task Assigned – Internal Project Budget: Recall Budget</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        70.
+        <input type="checkbox" id="cacix169" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the link <u><strong>Internal Project Budget: Recall Budget</strong></u>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 659px;"><img src="images/p2img89.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        71.
+        <input type="checkbox" id="cacix170" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Edit Item</strong> in the ribbon in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        72.
+        <input type="checkbox" id="cacix171" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Recall</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 792px;"><img src="images/p2img88.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>By clicking Recall, the Budget Review Loop was canceled, and both paths of the parallel process were canceled.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        73.
+        <input type="checkbox" id="cacix172" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Still in Internet Explorer, click <b>Internal Project Documents</b> in the Quick Launch.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 261px;"><img src="images/p2img87.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        74.
+        <input type="checkbox" id="cacix173" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Manager Review Cycle</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 358px;"><img src="images/p2img86.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The Internal Status (workflow status) shows Completed.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 523px;"><img src="images/p2img85.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The last entry in the log reads, "The internal project budget has been canceled."</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 319px;"><img src="images/p2img84.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>A new e-mail appears in Outlook:</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 815px;"><img src="images/p2img83.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i><p>If your recall fails to halt the workflow and set its status to Completed, perform the following check.</p><p>a. Open the workflow in Text Designer.</p><p>b. Repeat steps 7 through 12 in this exercise.</p><p>c. Retest your workflow.</p></i></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You have added a parallel workflow process with the ability for the submitter to cancel the workflow mid-flight!</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

@@ -1,0 +1,641 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 7.2</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 7.2</strong><br />
+            <strong>Link External Data With Workflow Logic</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong>Objective</strong></div></div><div class="ExRow"><div class="ExText"><strong>For improved efficiencies and some paperwork reduction, the HR manager has requested that the Time Off workflow interact with the HR data to check the number of available hours per employee.</strong></div></div><div class="ExRow"><div class="ExText"><strong><p>In this exercise, you will</p><ul><li>Integrate the Time Off Request Process with the HR database to check availability</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Integrating the Time Off Request Process with the HR database to check availability</strong></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Unlike SharePoint Designer 2010, SharePoint Designer 2013 does not support access to an external list from workflows. We are going to work around this limitation by copying the external list data to a site list.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="k0pcgz0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Lists and Libraries</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 269px;"><img src="images/p3img147.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="k0pcgz1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Custom List</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 450px;"><img src="images/p3img146.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="k0pcgz2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following values in the "Create list" or "document library" dialog:</p><p> </p><p>Name: <strong><code>Available Hours Copy</code></strong></p><p>Description: <strong><code>List for linking external HR data to Time Off Request process</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 658px;"><img src="images/p3img145.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="k0pcgz3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="k0pcgz4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Available Hours Copy</b> in the Lists list.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 419px;"><img src="images/p3img144.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="k0pcgz5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Edit list columns</b> in the Customization section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 541px;"><img src="images/p3img143.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="k0pcgz6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Rename the Title field to <code><b>AccountName</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 420px;"><img src="images/p3img142.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="k0pcgz7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Add New Column</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 63px;"><img src="images/1533-B1-7-2-8.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="k0pcgz8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Number</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 321px;"><img src="images/p3img141.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="k0pcgz9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the column name to <code><b>VacationHours<br /></b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="k0pcgz10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add the following columns by repeating the two previous steps:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <table border="1" cellpadding="8" cellspacing="0" style="width:400px"><tbody><tr><td><strong>Name</strong></td><td><strong>Type</strong></td></tr><tr><td><code><strong>SickHours</strong></code></td><td><strong>Number</strong></td></tr><tr><td><code><strong>PersonalHours</strong></code></td><td><strong>Number</strong></td></tr></tbody></table>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 406px;"><img src="images/p3img140.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="k0pcgz11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="k0pcgz12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Workflows</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 286px;"><img src="images/p3img139.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="k0pcgz13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Site Workflow</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 311px;"><img src="images/p3img138.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="k0pcgz14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following values in the Create Site Workflow dialog:</p><p> </p><p>Name: <code><strong>Copy External List Available Hours</strong></code></p><p>Platform Type: SharePoint 2010 Workflow</p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 658px;"><img src="images/p3img137.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="k0pcgz15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="k0pcgz16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Rename Step 1 <code><b>Initialize Variables</b></code>. Place the orange cursor in the <b>Initialize Variables</b> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 303px;"><img src="images/p3img136.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="k0pcgz17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Set Workflow Variable</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="k0pcgz18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>workflow variable</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="k0pcgz19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Create new variable</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 331px;"><img src="images/p3img135.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="k0pcgz20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following values in the Edit Variable dialog:</p><p> </p><p>Name: <strong><code>Department</code></strong></p><p>Type: <strong>String</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 262px;"><img src="images/p3img134.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="k0pcgz21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="k0pcgz22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>value</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="k0pcgz23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Type <code><em>[Island]</em>.<em>[Department]</em></code> (this is case sensitive!).
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 393px;"><img src="images/p3img133.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="k0pcgz24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Press <code>&lt;Enter&gt;</code>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="k0pcgz25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor below the <b>Initialize Variables</b> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 260px;"><img src="images/p3img132.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="k0pcgz26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Create a new step.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="k0pcgz27" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Rename the new step <code><b>Copy External List</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="k0pcgz28" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor within the <b>Copy External List</b> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 283px;"><img src="images/p3img131.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="k0pcgz29" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Create List Item</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="k0pcgz30" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="k0pcgz31" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>this list</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="k0pcgz32" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the List to <b>Available Hours Copy</b> in the Create New List Item dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 508px;"><img src="images/p3img130.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="k0pcgz33" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>AccountName</b> in the Field column.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 434px;"><img src="images/p3img129.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="k0pcgz34" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Modify</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="k0pcgz35" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> button in the Value Assignment dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="k0pcgz36" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Lookup for Single line of text" dialog, change the "Data source" value to <strong>Available Hours</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="k0pcgz37" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the "Field from source" to <strong>Account Name</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 469px;"><img src="images/p3img128.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="k0pcgz38" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Field value in the "Find a List Item" section to <strong>AccountName</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 466px;"><img src="images/p3img127.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="k0pcgz39" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> button next to the <strong>Value</strong> field.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 536px;"><img src="images/p3img126.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="k0pcgz40" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following values in the "Lookup for Single line of text" dialog:</p><p> </p><p>Data Source: <strong>Workflow Variables and Parameters</strong></p><p>Field from source:<strong> Variable: Department</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 530px;"><img src="images/p3img125.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>How many windows does it take to get to the center of a Create List Item action? One ... Two ...</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="k0pcgz41" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="k0pcgz42" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> again to close the "Lookup for Single line of text" dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>A warning message will appear, letting you know that more than one value may be returned and only the first value will be used. That's fine. We only have one value in our Available Hours list.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="k0pcgz43" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Yes</b> at the warning message.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 533px;"><img src="images/p3img124.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="k0pcgz44" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> again to close the Value Assignment dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>You should now be back at the Create New List Item dialog.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 459px;"><img src="images/p3img123.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="k0pcgz45" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Add</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="k0pcgz46" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the "Set this field" value to <b>VacationHours</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 338px;"><img src="images/p3img122.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="k0pcgz47" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> button to the right of the "To this value" field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="k0pcgz48" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Lookup for Number" dialog, set the "Data source" to <strong>Available Hours</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        50.
+        <input type="checkbox" id="k0pcgz49" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the "Field from source" to <strong>VacationHours</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 463px;"><img src="images/p3img121.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        51.
+        <input type="checkbox" id="k0pcgz50" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the <strong>Field</strong> value to <strong>AccountName</strong> in the "Find the List Item" section.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        52.
+        <input type="checkbox" id="k0pcgz51" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> button next to the <strong>Value</strong> field.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 549px;"><img src="images/p3img120.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        53.
+        <input type="checkbox" id="k0pcgz52" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the <b>Data source</b> to <b>Workflow Variables and Parameters</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        54.
+        <input type="checkbox" id="k0pcgz53" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the "Field from source" to <b>Variable: Department</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 488px;"><img src="images/p3img119.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        55.
+        <input type="checkbox" id="k0pcgz54" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to close the "Lookup for Single line of text" dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        56.
+        <input type="checkbox" id="k0pcgz55" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>OK</strong> to close the "Lookup for Number" dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        57.
+        <input type="checkbox" id="k0pcgz56" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Yes</b> at the warning dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        58.
+        <input type="checkbox" id="k0pcgz57" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to close the Value Assignment dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 472px;"><img src="images/p3img118.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        59.
+        <input type="checkbox" id="k0pcgz58" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add</b> button in the Create New List Item dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        60.
+        <input type="checkbox" id="k0pcgz59" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the "Set this field value" to <b>SickHours</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 338px;"><img src="images/p3img117.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        61.
+        <input type="checkbox" id="k0pcgz60" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> button to the right of the "To this value" field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        62.
+        <input type="checkbox" id="k0pcgz61" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Lookup for Number" dialog, set the "Data source" to <strong>Available Hours</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        63.
+        <input type="checkbox" id="k0pcgz62" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the "Field from source" to <b>SickHours</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 464px;"><img src="images/p3img116.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        64.
+        <input type="checkbox" id="k0pcgz63" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Field value to <strong>AccountName</strong> in the "Find the List Item" section.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        65.
+        <input type="checkbox" id="k0pcgz64" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> button next to the Value field.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 545px;"><img src="images/p3img115.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        66.
+        <input type="checkbox" id="k0pcgz65" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the "Data source" to <b>Workflow Variables and Parameters</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        67.
+        <input type="checkbox" id="k0pcgz66" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the "Field from source" to <b>Variable: Department</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 488px;"><img src="images/p3img114.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        68.
+        <input type="checkbox" id="k0pcgz67" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to close the "Lookup for Single line of text" dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        69.
+        <input type="checkbox" id="k0pcgz68" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>OK</strong> to close the "Lookup for Number" dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        70.
+        <input type="checkbox" id="k0pcgz69" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Yes</b> at the warning dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        71.
+        <input type="checkbox" id="k0pcgz70" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to close the Value Assignment dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 488px;"><img src="images/p3img113.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        72.
+        <input type="checkbox" id="k0pcgz71" /></div><div class="ExRight" style="vertical-align:baseline;">
+        One more time: Click the <b>Add</b> button in the Create New List Item dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        73.
+        <input type="checkbox" id="k0pcgz72" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the "Set this field" value to <b>PersonalHours</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 338px;"><img src="images/p3img112.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        74.
+        <input type="checkbox" id="k0pcgz73" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> button to the right of the "To this value" field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        75.
+        <input type="checkbox" id="k0pcgz74" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Lookup for Number" dialog, set the "Data source" to <strong>Available Hours</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        76.
+        <input type="checkbox" id="k0pcgz75" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the "Field from source" to <strong>PersonalHours</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 464px;"><img src="images/p3img111.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        77.
+        <input type="checkbox" id="k0pcgz76" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Field value to <strong>AccountName</strong> in the "Find the List Item" section.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        78.
+        <input type="checkbox" id="k0pcgz77" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> button next to the Value field.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 545px;"><img src="images/p3img110.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        79.
+        <input type="checkbox" id="k0pcgz78" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the "Data source" to <b>Workflow Variables and Parameters</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        80.
+        <input type="checkbox" id="k0pcgz79" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the "Field from source" to <b>Variable: Department</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 488px;"><img src="images/p3img109.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        81.
+        <input type="checkbox" id="k0pcgz80" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to close the "Lookup for Single line of text" dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        82.
+        <input type="checkbox" id="k0pcgz81" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>OK</strong> to close the "Lookup for Number" dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        83.
+        <input type="checkbox" id="k0pcgz82" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Yes</b> at the warning dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        84.
+        <input type="checkbox" id="k0pcgz83" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to close the Value Assignment dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 488px;"><img src="images/p3img108.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        85.
+        <input type="checkbox" id="k0pcgz84" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to close the Create New List Item dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        86.
+        <input type="checkbox" id="k0pcgz85" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the <b>Create List Item</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 350px;"><img src="images/p3img107.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        87.
+        <input type="checkbox" id="k0pcgz86" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Log to History</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        88.
+        <input type="checkbox" id="k0pcgz87" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the message to <code><b>Available hours have been copied</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        89.
+        <input type="checkbox" id="k0pcgz88" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Publish</b> to publish the workflow.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Starting the Available Hours Copy workflow</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        90.
+        <input type="checkbox" id="k0pcgz89" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your site in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        91.
+        <input type="checkbox" id="k0pcgz90" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Site Contents</b> in the Quick Launch.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 274px;"><img src="images/p3img106.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        92.
+        <input type="checkbox" id="k0pcgz91" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <strong>SITE WORKFLOWS</strong> in the upper right corner of the page.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 294px;"><img src="images/p3img105.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        93.
+        <input type="checkbox" id="k0pcgz92" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Copy External List Available Hours</b> to start the site workflow.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 400px;"><img src="images/p3img104.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        94.
+        <input type="checkbox" id="k0pcgz93" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Start</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 783px;"><img src="images/p3img103.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The site workflow will start.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 461px;"><img src="images/p3img102.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        95.
+        <input type="checkbox" id="k0pcgz94" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Confirm that the site workflow has completed successfully. The Internal Status will read "Completed."
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 864px;"><img src="images/p3img101.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        96.
+        <input type="checkbox" id="k0pcgz95" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Available Hours Copy</b> from the Quick Launch.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 324px;"><img src="images/p3img100.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Your Available Hours Copy should now have the same item as the Available Hours external list.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 593px;"><img src="images/p3img99.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        97.
+        <input type="checkbox" id="k0pcgz96" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Close Internet Explorer.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You have transferred external list data to a SharePoint custom list. This will enable our Time Off Request workflow to use HR data!</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

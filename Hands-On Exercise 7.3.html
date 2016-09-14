@@ -1,0 +1,583 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 7.3</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 7.3</strong><br />
+            <strong>Store External Data in Workflow Variables</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong>Objective</strong></div></div><div class="ExRow"><div class="ExText"><strong>In this portion of Chapter 7, you will grab data from the list containing external HR data and store it in workflow variables to check the number of hours available based on the type of Time Off request.</strong></div></div><div class="ExRow"><div class="ExText"><strong><p>In this exercise, you will</p><ul><li>Complete the Time Off Process workflow</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Complete the Time Off Process workflow</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="a4s2ob0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In Designer, open the <strong>Time Off Request Process</strong> workflow and make sure you are in the Text-Based Designer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="a4s2ob1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Edit workflow</strong> in the Customization section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 583px;"><img src="images/p3img98.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="a4s2ob2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the <strong>Start Workflow</strong> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 408px;"><img src="images/p3img97.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="a4s2ob3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <strong>Stage</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="a4s2ob4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the new stage name to <strong>Get Available Hours</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 302px;"><img src="images/p3img96.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="a4s2ob5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the last stage, <strong>Minimum Hours Required</strong>, and add a new Stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 313px;"><img src="images/p3img95.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="a4s2ob6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Name the stage <code><strong>Not Enough Hours</strong></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 287px;"><img src="images/p3img94.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="a4s2ob7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <strong>Go to Time Of Approval</strong> action in the <strong>Start Workflow</strong> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 483px;"><img src="images/p3img93.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="a4s2ob8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>Time Off Approval</strong> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="a4s2ob9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <strong>Get Available Hours</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 308px;"><img src="images/p3img92.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="a4s2ob10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor in the <strong>Get Available Hours</strong> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 313px;"><img src="images/p3img91.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="a4s2ob11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <strong>Parallel Block</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 347px;"><img src="images/p3img90.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="a4s2ob12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Within the Parallel Block, add a <strong>Step</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="a4s2ob13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Name the step <strong><code>Get Vacation Hours</code></strong>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="a4s2ob14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the Get Vacation Hours step, add the condition <strong>If Any Value Equals Value</strong> and set these values:</p><p> </p><p>First value: <strong><code>Current Item: Time Off Type</code></strong></p><p>Operator: <strong><code>equals</code></strong></p><p>Second value: <strong><code>Vacation</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 470px;"><img src="images/p3img89.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="a4s2ob15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the <strong>If </strong>statement.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 300px;"><img src="images/p3img88.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="a4s2ob16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <strong>Set Workflow Variable</strong> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="a4s2ob17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>workflow variable</strong> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="a4s2ob18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <strong>Create a new variable</strong> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="a4s2ob19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following values in the Edit Variable dialog.</p><p> </p><p>Name: <strong><code>Available Hours</code></strong></p><p>Type: <strong>Integer</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="a4s2ob20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>OK</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="a4s2ob21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>value </strong>link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="a4s2ob22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong><em>fx</em></strong> button.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 381px;"><img src="images/p3img87.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="a4s2ob23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following values for the "Lookup for Integer" dialog.</p><p> </p><p>Data source: <strong>Available Hours Copy</strong></p><p>Field from source: <strong>VacationHours</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="a4s2ob24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the "Find the List Item" section, set the following value:</p><p> </p><p>Field: <strong>AccountName</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="a4s2ob25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong><em>fx </em></strong>button to the right of the <strong>Value </strong>field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="a4s2ob26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following values in the "Lookup for Single line of text" dialog:</p><p> </p><p>Data source: <strong>Workflow Variables and Parameters</strong></p><p>Field from source: <strong>Variables: Department</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="a4s2ob27" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>OK</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 502px;"><img src="images/p3img86.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="a4s2ob28" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>OK </strong>again.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="a4s2ob29" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Yes </strong>at the warning message.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The Get Available Hours stage should look like this:</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 769px;"><img src="images/p3img85.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="a4s2ob30" /></div><div class="ExRight" style="vertical-align:baseline;">
+        To save some time, use the Copy &amp; Paste feature. Right-click the <strong>Get Vacation Hours</strong> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 810px;"><img src="images/p3img84.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="a4s2ob31" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <strong>Copy </strong>from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 347px;"><img src="images/p3img83.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="a4s2ob32" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor below the <strong>Get Vacation Hours</strong> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 341px;"><img src="images/p3img82.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="a4s2ob33" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Right-click and select <strong>Paste</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 637px;"><img src="images/p3img81.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="a4s2ob34" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Rename the duplicate Get Vacation Hours step <strong><code>Get Sick Hours</code></strong>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="a4s2ob35" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Get Sick Hours step, click the <strong>Vacation </strong>value.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="a4s2ob36" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <strong>Sick </strong>from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 492px;"><img src="images/p3img80.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="a4s2ob37" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Set Workflow Variable action, click the <strong>Available Hours Copy: VacationHours</strong> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="a4s2ob38" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the "Field from" source to <strong>SickHours</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 622px;"><img src="images/p3img79.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="a4s2ob39" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>OK</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="a4s2ob40" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Yes </strong>at the warning dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="a4s2ob41" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Copy the <strong>Get Sick Hours</strong> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 558px;"><img src="images/p3img78.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="a4s2ob42" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor below the <strong>Get Sick Hours</strong> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 300px;"><img src="images/p3img77.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="a4s2ob43" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Right-click and select <strong>Paste </strong>from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="a4s2ob44" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Rename the new step <strong><code>Get Personal Hours</code></strong>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 519px;"><img src="images/p3img76.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="a4s2ob45" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Get Personal Hours step, click the <strong>Sick </strong>value.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="a4s2ob46" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <strong>Personal </strong>from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 485px;"><img src="images/p3img75.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="a4s2ob47" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Set Workflow Variable action, click the <strong>Available Hours Copy: SickHours</strong> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="a4s2ob48" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the "Field from" source to <strong>PersonalHours</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 511px;"><img src="images/p3img74.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        50.
+        <input type="checkbox" id="a4s2ob49" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        51.
+        <input type="checkbox" id="a4s2ob50" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Yes </strong>at the warning dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The Get Available Hours stage should look like this:</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 894px;"><img src="images/p3img73.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        52.
+        <input type="checkbox" id="a4s2ob51" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor in the <strong>Transition to</strong> stage section of the <strong>Get Available Hours</strong> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 403px;"><img src="images/p3img72.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        53.
+        <input type="checkbox" id="a4s2ob52" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add an <strong>If Any Values Equals Value</strong> condition.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        54.
+        <input type="checkbox" id="a4s2ob53" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the first <strong>value</strong> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        55.
+        <input type="checkbox" id="a4s2ob54" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Click the <em><strong>fx </strong></em>button and set the following values:</p><p> </p><p>Data source: <strong>Current Item</strong></p><p>Field from source: <strong>Time Off Hours</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 488px;"><img src="images/p3img71.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        56.
+        <input type="checkbox" id="a4s2ob55" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>OK</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        57.
+        <input type="checkbox" id="a4s2ob56" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>equals </strong>link to change the operator to <strong>is less than or equal to</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 480px;"><img src="images/p3img70.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        58.
+        <input type="checkbox" id="a4s2ob57" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the second <strong>value </strong>link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        59.
+        <input type="checkbox" id="a4s2ob58" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Click the <em><strong>fx </strong></em>button and set the following values:</p><p> </p><p>Data source: <strong>Workflow Variables and Parameters</strong></p><p>Field from source: <strong>Variable: Available Hours</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 488px;"><img src="images/p3img69.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        60.
+        <input type="checkbox" id="a4s2ob59" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>OK</strong>. In the following screenshot, "is greater than or equal to" should be "is less than or equal to."
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 588px;"><img src="images/p3img68.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        61.
+        <input type="checkbox" id="a4s2ob60" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor under the <strong>If </strong>statement.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 283px;"><img src="images/p3img67.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        62.
+        <input type="checkbox" id="a4s2ob61" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <strong>Go to a Stage</strong> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        63.
+        <input type="checkbox" id="a4s2ob62" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the stage to <strong><code>Time Off Approval</code></strong>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 333px;"><img src="images/p3img66.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        64.
+        <input type="checkbox" id="a4s2ob63" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the <strong>Else </strong>statement.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 286px;"><img src="images/p3img65.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        65.
+        <input type="checkbox" id="a4s2ob64" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <strong>Go to a Stage</strong> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        66.
+        <input type="checkbox" id="a4s2ob65" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the stage to <code><strong>Not Enough Hours</strong></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 286px;"><img src="images/p3img64.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        67.
+        <input type="checkbox" id="a4s2ob66" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor in the <strong>Not Enough Hours</strong> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 328px;"><img src="images/p3img63.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        68.
+        <input type="checkbox" id="a4s2ob67" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <strong>Send an Email</strong> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        69.
+        <input type="checkbox" id="a4s2ob68" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>these users</strong> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        70.
+        <input type="checkbox" id="a4s2ob69" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the Define E-mail Message dialog, set the following values:</p><p> </p><p>To: <strong>User who created current item</strong></p><p>Subject: <strong><code>Time Off Request: Not Enough Hours Available</code></strong></p><p>Body: <strong><code>[%Current Item:Created By%], You do not have enough [%Current Item: Time Off Type%] hours available. You requested [%Current Item:Time Off Hours%] hours but you have [%Variable: Available Hours%] hours available. Please correct and resubmit your time off request.</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 777px;"><img src="images/p3img62.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        71.
+        <input type="checkbox" id="a4s2ob70" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>OK</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        72.
+        <input type="checkbox" id="a4s2ob71" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor in the <strong>Transition to</strong> stage section of the <strong>Not Enough Hours</strong> stage.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        73.
+        <input type="checkbox" id="a4s2ob72" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <strong>Go to Stage</strong> action and set it to <strong><code>End of Workflow</code></strong>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        74.
+        <input type="checkbox" id="a4s2ob73" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>Check for Errors</strong> button in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        75.
+        <input type="checkbox" id="a4s2ob74" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Publish </strong>to publish the workflow.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        76.
+        <input type="checkbox" id="a4s2ob75" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Right-click the <strong>Time Off Request Process</strong> tab.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        77.
+        <input type="checkbox" id="a4s2ob76" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <strong>Close All Tabs</strong> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 368px;"><img src="images/p3img61.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Test the updated Time Off Request</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        78.
+        <input type="checkbox" id="a4s2ob77" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Go to your department's home page in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        79.
+        <input type="checkbox" id="a4s2ob78" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Time Off Requests</strong> in the Quick Launch.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        80.
+        <input type="checkbox" id="a4s2ob79" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>New Item</strong> to add a new request.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        81.
+        <input type="checkbox" id="a4s2ob80" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Fill out the Time Off request, setting the Time Off Hours to <strong><code>100</code></strong> (which is more than you have available).
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 693px;"><img src="images/p3img60.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        82.
+        <input type="checkbox" id="a4s2ob81" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <strong>Save </strong>the request.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        83.
+        <input type="checkbox" id="a4s2ob82" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <strong>row</strong> you just added.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 700px;"><img src="images/p3img59.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        84.
+        <input type="checkbox" id="a4s2ob83" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <strong>ITEMS </strong>ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        85.
+        <input type="checkbox" id="a4s2ob84" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>Time Off </strong>button in the Workflows group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 311px;"><img src="images/p3img58.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        86.
+        <input type="checkbox" id="a4s2ob85" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Check your Outlook inbox for an e-mail with the subject <strong>Time Off Request; Not Enough Hours</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 644px;"><img src="images/p3img57.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        87.
+        <input type="checkbox" id="a4s2ob86" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Rerun the workflow test, but this time, request <strong><code>8</code></strong> hours of vacation.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You have successfully integrated the Time Off Request process with the MSC HR system.</strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exBonus.jpg" /></div><div class="ExRight"><strong><p>Change the Task Assignment e-mail to include:</p><ul><li>Type of Request</li><li>Hours Requested</li><li>Start Date</li><li>Return Date</li></ul></strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

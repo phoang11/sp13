@@ -1,0 +1,295 @@
+﻿body
+{
+    margin-top: 0;
+    font-size:1.1em;
+}
+
+.ExLeft, .ExLeftRubric, .ExEqLeft, .ExRight, 
+.ExRightRubric, .ExCentredText, .ExText, .ExTitle, .ExScrollTitle
+{
+    font-family: Verdana, Arial, sans-serif;
+    padding:10px 20px 10px 0;
+}
+
+.ExRightRubric 
+{
+    color: #E00000;
+}
+
+.redRubric 
+{
+    color: #E00000;
+}
+
+.ExLeft p, .ExEqLeft p, .ExRight p, .ExRightRubric p, 
+.ExCentredText p, .ExText p, .ExTitle p, .ExScrollTitle p
+{
+    margin: 0; 
+    padding: 0;
+}
+
+.ExFooter
+{
+    width: 100%;
+    text-align: right;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: small;
+    color: gray;
+    border: none;
+    border-top: solid 2px gray;
+}
+
+.ExNavigator
+{
+    clear:both;
+    width: 100%;
+    font-family: Verdana, Arial, sans-serif;
+    font-size:medium;
+    color: gray;
+    padding: 4px;
+}
+
+.ExRight input[type="text"], 
+.ExCentredText input[type="text"], 
+.ExText input[type="text"], 
+.ExRightRubric input[type="text"]
+{
+    width: 70%;
+    color: #00007F;
+    overflow:hidden;
+    padding: 4px;
+    border: solid 1px #FFFFFF;
+    border-bottom: solid 1px #000000;
+    font-family: 'Consolas', 'Comic Sans MS', cursive;
+    font-size: 1.1em;
+    outline: none;
+}
+
+.ExRight input[type="text"]:hover, 
+.ExCentredText input[type="text"]:hover, 
+.ExText input[type="text"]:hover,
+.ExRightRubric input[type="text"]:hover
+{
+    background-color: #FFFFD0;
+    border: solid 1px #7F7F7F;
+}
+
+.ExRight textarea, 
+.ExCentredText textarea, 
+.ExText textarea,
+.ExRightRubric textArea
+{
+    width: 70%;
+    border: solid 1px black;
+    color: #00007F;
+    font-family: 'Consolas', 'Comic Sans MS', cursive;
+    font-size: 1.1em;
+    outline: none;
+    resize: none;
+}
+
+.ExRight textarea:hover, 
+.ExRightRubric textarea:hover, 
+.ExCentredText textarea:hover, 
+.ExText textarea:hover
+{
+    border: solid 1px #7F7F7F;
+    background-color: #FFFFD0;
+}
+
+.MediaDiv>img {
+    width: 100%;
+    height: auto;
+}
+
+.ExTitleLink
+{
+    width:20%; 
+    float:left; 
+    font-size:12px; 
+    text-align:right; 
+    padding:15px;
+}
+.ExVideo
+{
+    padding:5px; 
+    border-style:solid; 
+    border-color:black; 
+    border-width:1px;
+    width: 100%;
+    height: auto;
+}
+
+.RightImages
+{
+    /*float:left; padding:0px 12px 4px 0px;*/
+    display: table-cell;
+    vertical-align:top;
+    width: 56px;
+}
+
+.ExFold
+{
+    font-family: Verdana, Arial, sans-serif;
+    font-size:11pt;
+    color: blue;
+}
+
+.ExFoldRubric
+{
+    font-family: Verdana, Arial, sans-serif;
+    font-size:11pt;
+    color: #E00000;
+}
+.ExCode
+{
+    display: table-cell;
+}
+
+pre {
+ white-space: pre-wrap;       /* css-3 */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+ white-space: -pre-wrap;      /* Opera 4-6 */
+ white-space: -o-pre-wrap;    /* Opera 7 */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.ExText
+{
+    display: table-cell;
+    vertical-align:top;
+    font-size:11pt;
+}
+.ExRow
+{
+    display: table;
+    width: 100%;
+    font-size:11pt;
+}
+
+.ExLeft, .ExLeftRubric
+{
+    display: table-cell;
+    width:100px;
+    text-align:right;
+    vertical-align:top;
+    font-size:11pt;
+}
+
+.ExLeftRubric
+{
+    color: #E00000;
+}
+
+.ExEqLeft
+{
+    display: table-cell;
+    width:50%;
+    vertical-align:top;
+    text-align:right;
+    font-size:12pt;
+}
+
+.ExRight, .ExRightRubric
+{
+    display: table-cell;
+    vertical-align:top;
+    font-size:11pt;
+}
+
+.ExRightRubric
+{
+    color: #E00000;
+}
+
+.ExTitle
+{
+    position: fixed;
+    width:100%;
+    color: darkgreen;
+    background-color:white;
+    border-bottom-style:solid;
+    border-bottom-color:gray;
+    border-bottom-width:2px;
+    font-size:14pt;
+    z-index:9;
+}
+
+.ExScrollTitle 
+{
+    width:100%;
+    color: darkgreen;
+    background-color:white;
+    border-bottom-style:solid;
+    border-bottom-color:gray;
+    border-bottom-width:2px;
+    font-size:14pt;
+}
+
+.ExHidden
+{
+    position: fixed;
+    width:100%;
+    z-index:8;
+}
+
+.ExCentredText
+{
+    display: table-cell;
+    text-align: center;
+    font-size:11pt;
+}
+
+.copyable
+{
+    cursor:pointer; 
+    position:relative;
+    padding:5px 5px 5px 5px;
+    border-width:1px;
+    border-style:solid;
+    border-radius:5px 5px 5px 5px; 
+    background-color:white;
+    border-color:white;
+}
+
+.copyinstruction
+{
+    display:none; 
+    padding:1px 4px 1px 4px;
+    font-family:Arial, Verdana; 
+    font-size:10px; 
+    position:absolute; 
+    background-color:#4040ff; 
+    color:white; 
+    top:-15px;
+    left:10px;
+}
+
+.marker
+{
+    background-color: Yellow;
+}
+
+.handw
+{
+    font-family:'Lucida Sans Unicode', Verdana, sans-serif;
+    font-style: italic;
+}
+
+.boldcode
+{
+    font-weight: bold;
+}
+
+ul ul li:before
+{ 
+    content:"—"; position:relative; left:-5px;
+}
+
+ul ul li
+{ 
+    list-style: none;
+    text-indent:-5px; 
+}
+
+

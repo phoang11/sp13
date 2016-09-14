@@ -1,34 +1,134 @@
-<!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="UTF-8">
-    <title>Sp13 by phoang11</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">Sp13</h1>
-      <h2 class="project-tagline"></h2>
-      <a href="https://github.com/phoang11/sp13" class="btn">View on GitHub</a>
-      <a href="https://github.com/phoang11/sp13/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/phoang11/sp13/tarball/master" class="btn">Download .tar.gz</a>
-    </section>
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer</title>
+    <link href="DynEx.css" rel="stylesheet" />
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function () {
+            $("#accordion0,#accordion1,#accordion2,#accordion3").accordion({
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+            $("#accordion0,#accordion1,#accordion2,#accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+        });
+    </script>
+</head>
+<body>
+<form> <!-- In HTML5 the action attribute is no longer required -->
+    <div class="ExScrollTitle">
+        <div style="width:70%; float:left;">
+            <strong>SharePoint Designer 2013: Workflows and Data-Driven Solutions</strong><br />
+            <strong>Exercise Manual, Course 1533 B.2</strong>
+        </div>
+        
+        <div style="clear:both;"></div>
+    </div>
+    <br />
+    <div style="display:table;">
+        <div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 1.1.html">Hands-On Exercise 1.1</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 1.1.html">MSC SharePoint Site Overview</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 2.1.html">Hands-On Exercise 2.1</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 2.1.html">Navigating to Your Department Site</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 2.2.html">Hands-On Exercise 2.2</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 2.2.html">Working With Site Columns</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 2.3.html">Hands-On Exercise 2.3</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 2.3.html">Creating and Using Content Types</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 3.1.html">Hands-On Exercise 3.1</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 3.1.html">Introduction to Workflows in SharePoint Designer</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 3.2.html">Hands-On Exercise 3.2</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 3.2.html">Automating the Time-Off Request Process</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 3.3.html">Hands-On Exercise 3.3</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 3.3.html">Stage Transitions and Communication</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 3.4.html">Hands-On Exercise 3.4</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 3.4.html">Using Workflow Conditions to Enforce Business Rules</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 3.5.html">Hands-On Exercise 3.5</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 3.5.html">Modifying and Testing a Workflow</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 4.1.html">Hands-On Exercise 4.1</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 4.1.html">Editing Workflows With Visual Designer</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 5.1.html">Hands-On Exercise 5.1</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 5.1.html">Budget Approval Process</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 5.2.html">Hands-On Exercise 5.2</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 5.2.html">Creating Looping Workflow Segments</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 5.3.html">Hands-On Exercise 5.3</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 5.3.html">Workflow Recall With Parallel Processes</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 5.4.html">Hands-On Exercise 5.4</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 5.4.html">Workflow Quick Step</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 6.1.html">Hands-On Exercise 6.1</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 6.1.html">Connecting SQL Server Data to SharePoint</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 6.2.html">Hands-On Exercise 6.2</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 6.2.html">Connecting SQL Server Data to Outlook</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 6.3.html">Hands-On Exercise 6.3</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 6.3.html">Conditional Formatting With Client-Side Rendering</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 6.4-Opt.html">Optional Hands-On Exercise 6.4</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 6.4-Opt.html">Connecting a Workflow to a Web Service</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 7.1.html">Hands-On Exercise 7.1</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 7.1.html">Reading SQL Server Data From a Workflow</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 7.2.html">Hands-On Exercise 7.2</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 7.2.html">Link External Data With Workflow Logic</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 7.3.html">Hands-On Exercise 7.3</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 7.3.html">Store External Data in Workflow Variables</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 7.4.html">Hands-On Exercise 7.4</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 7.4.html">SharePoint Data Views</a></div>
+</div>
+<div class="ExRow">
+  <div class="ExEqLeft"><a href="Hands-On Exercise 8.1.html">Hands-On Exercise 8.1</a></div>
+  <div class="ExRight"><a href="Hands-On Exercise 8.1.html">jQuery Mega Menu</a></div>
+</div>
 
-    <section class="main-content">
-      <p>test</p>
-
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/phoang11/sp13">Sp13</a> is maintained by <a href="https://github.com/phoang11">phoang11</a>.</span>
-
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
-
-    </section>
-
-  
-  </body>
+    </div>
+    <div class="ExFooter"><br />Viewer version 1.0.1505.28</div>
+</form>
+</body>
 </html>
+

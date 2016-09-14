@@ -1,0 +1,465 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 3.2</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 3.2</strong><br />
+            <strong>Automating the Time-Off Request Process</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong>Objective</strong></div></div><div class="ExRow"><div class="ExText"><strong>The Time Off content type and list really helped us organize our vacation requests. Now we want to apply some automation to our current manager approval process.</strong></div></div><div class="ExRow"><div class="ExText"><strong><p>In this exercise, you will</p><ul><li>Build a simple manager approval workflow for time-off requests</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Creating the time-off request workflow</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="lklzqd0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your department site in SharePoint Designer 2013 if it is not already open.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="lklzqd1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select<b> Workflows</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 273px;"><img src="images/p1img188.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="lklzqd2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>List Workflow</b> button in the ribbon and click <b>Time Off Requests </b>from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 395px;"><img src="images/p1img187.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="lklzqd3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the Create List Workflow – Time Off Requests dialog, enter the following:</p><p> </p><p>Name: <code><strong>Time Off Request Process</strong></code></p><p>Description: <code><strong>Time Off manager approval workflow</strong></code></p><p>Platform Type: <strong>SharePoint 2013 Workflow</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 674px;"><img src="images/p1img186.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="lklzqd4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="lklzqd5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Time Off Request Process</b> in the Designer breadcrumb trail.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 759px;"><img src="images/p1img185.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="lklzqd6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Settings area on the Time Off Request Process page, click the down arrow of the <b>Task List </b>pull-down menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 679px;"><img src="images/p1img184.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="lklzqd7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        On the pull-down menu, select <b>New Task List</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 321px;"><img src="images/p1img183.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="lklzqd8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        A warning dialog will appear. Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="lklzqd9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Yes</b> on the second warning dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="lklzqd10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Start Options section, select the checkbox next to <b>Start workflow automatically when an item is created</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 623px;"><img src="images/p1img182.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="lklzqd11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save your work by clicking <b>Save</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="lklzqd12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Edit workflow</b> in the Customization section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 377px;"><img src="images/p1img181.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="lklzqd13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the words <b>Stage 1</b> in the first stage of the workflow.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 578px;"><img src="images/p1img180.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="lklzqd14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Replace the stage name, Stage 1, with <code><strong>Time Off Approval</strong></code> and press <code>&lt;Enter&gt;</code>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 497px;"><img src="images/p1img179.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="lklzqd15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click just below the phrase "Start typing. . ." so that the orange blinking line appears. This is where you will insert your first action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 494px;"><img src="images/p1img178.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="lklzqd16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Action</b> button in the ribbon and select <b>Add Time to Date</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 641px;"><img src="images/p1img177.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="lklzqd17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the number of hours to 24 by clicking the <b>0</b> (zero) next to the word "hours" and typing <code><b>24</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 670px;"><img src="images/p1img176.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="lklzqd18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        For the Date value, click the word <strong>date</strong>, then click the <strong><em>fx</em> </strong>button.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 726px;"><img src="images/p1img175.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="lklzqd19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Lookup for Date/Time" dialog, set the data source to <b>Current Item</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="lklzqd20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set "Field from source" to <b>Created</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="lklzqd21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="lklzqd22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the link <b>Variable: date</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="lklzqd23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Create a new variable</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 350px;"><img src="images/p1img174.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="lklzqd24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Edit Variable dialog, set the name of the new variable to <code><b>Tomorrow</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 329px;"><img src="images/p1img173.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="lklzqd25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="lklzqd26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor below the action you just created.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 464px;"><img src="images/p1img172.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="lklzqd27" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add an <b>Assign a task</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 772px;"><img src="images/p1img171.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="lklzqd28" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>this user</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="lklzqd29" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Assign a Task" dialog, click the ellipsis next to the Participant field.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 731px;"><img src="images/p1img170.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="lklzqd30" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Select User dialog, select <b>User who created current item</b> from the list of users and groups.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 308px;"><img src="images/p1img169.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="lklzqd31" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="lklzqd32" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="lklzqd33" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the Task Title field, type the following:</p><p> </p><p><strong><code>Time Off Request: Please Review</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="lklzqd34" /></div><div class="ExRight" style="vertical-align:baseline;">
+        For the description, click <strong>Open editor </strong><strong>for body</strong> to open the String Builder.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 519px;"><img src="images/p1img168.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="lklzqd35" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Type the following: <code><b>Please review the time off request from</b> &lt;Space&gt;</code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="lklzqd36" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add or Change Lookup</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 562px;"><img src="images/p1img167.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="lklzqd37" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the fields to the following in the "Lookup for String" dialog box:</p><p> </p><p>Data source: <strong>Current Item</strong></p><p>Field from source: <strong>Created By</strong></p><p>Return field as: <strong>Display Name</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 612px;"><img src="images/p1img166.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="lklzqd38" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> in the "Lookup for String" dialog box. Your String Builder dialog should now look like this:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 607px;"><img src="images/p1img165.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="lklzqd39" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to close the String Builder.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="lklzqd40" /></div><div class="ExRight" style="vertical-align:baseline;">
+        For the task Due Date field, click the <em><strong>fx</strong></em> button.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 734px;"><img src="images/p1img164.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="lklzqd41" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Data Source to <b>Workflow Variables and Parameters</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="lklzqd42" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Then set the "Field from source" pull-down to <b>Variable: Tomorrow</b>. Your Lookup dialog should look like this:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 488px;"><img src="images/p1img163.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="lklzqd43" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to close the Lookup dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="lklzqd44" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> again.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="lklzqd45" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Finish the stage by placing the orange cursor in the "Transition to stage" section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 908px;"><img src="images/p1img162.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="lklzqd46" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <strong>Go to a stage</strong> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="lklzqd47" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>a stage</strong> link in the "Go to a stage" action. Set the value to <strong>End of Workflow</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 239px;"><img src="images/p1img161.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  Your Time Off Approval stage should now look like this:
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 730px;"><img src="images/p1img160.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Perform a quick test of the workflow</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="lklzqd48" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Publish the workflow by clicking <b>Publish</b> in the Save section of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 239px;"><img src="images/p1img159.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        50.
+        <input type="checkbox" id="lklzqd49" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Site Objects pane, select <b>List and Libraries</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 317px;"><img src="images/p1img158.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        51.
+        <input type="checkbox" id="lklzqd50" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click just to the right of the words <b>Time Off Request</b> to select (but not open) the Time Off Requests list.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 358px;"><img src="images/p1img157.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        52.
+        <input type="checkbox" id="lklzqd51" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>Preview in Browser</b> button to open the list in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 347px;"><img src="images/p1img156.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        53.
+        <input type="checkbox" id="lklzqd52" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Create a new Time Off Request by clicking the <b>new item</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 458px;"><img src="images/p1img155.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        54.
+        <input type="checkbox" id="lklzqd53" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Enter any number of hours for <b>Time Off Hours</b>. Then enter a <b>Start Date</b> and <b>End Date</b>. At this point in the workflow, we have no logic or conditions, so it doesn't matter what values you enter for this test.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 682px;"><img src="images/p1img154.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        55.
+        <input type="checkbox" id="lklzqd54" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        56.
+        <input type="checkbox" id="lklzqd55" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Within 1 minute, you will get an e-mail from SharePoint. Open <b>Outlook 2013</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        57.
+        <input type="checkbox" id="lklzqd56" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the body of the new e-mail, there will be a link labeled <b>Time Off Request: Please Review</b>. Click that link.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 591px;"><img src="images/p1img153.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        58.
+        <input type="checkbox" id="lklzqd57" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Internet Explorer will open to the Workflow Task. Click <b>Edit Item</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 278px;"><img src="images/p1img152.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        59.
+        <input type="checkbox" id="lklzqd58" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Approve the request by clicking <b>Approved</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 908px;"><img src="images/p1img151.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! The workflow is now complete! This is a very simple approval workflow. In the next exercise, you will add conditions and actions to make it more realistic.</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

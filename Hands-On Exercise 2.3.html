@@ -1,0 +1,420 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 2.3</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 2.3</strong><br />
+            <strong>Creating and Using Content Types</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong>Objectives</strong></div></div><div class="ExRow"><div class="ExText"><strong><p>In this exercise, you will</p><ul><li>Build the Time Off content type</li><li>Set up a list with the new content type</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Building the Time Off content type</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="aumv040" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your SharePoint site if Designer is not already open.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="aumv041" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Content Types</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 271px;"><img src="images/p1img268.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="aumv042" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Content Type</b> in the New section of the ribbon to create a new content type.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 69px;"><img src="images/1533b1x2x3x3.PNG" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="aumv043" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the "Create a Content Type" dialog box, enter the following:</p><p> </p><p>Name: <code><strong>Time Off Request</strong></code><br />
+Description: <code><strong>Create a time off request</strong></code><br />
+Select parent content type from: <strong>List Content Types</strong></p><p>Select parent content type: <strong>Item</strong></p><p>New group: <code><strong>_<em>[Department]</em></strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 671px;"><img src="images/p1img267.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="aumv044" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>You do not need to save your work when creating a new content type. SharePoint Designer saves the content type when you click OK in the Create dialog box.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="aumv045" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Time Off Request</b> content type you just created in the Content Types list.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 781px;"><img src="images/p1img266.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="aumv046" /></div><div class="ExRight" style="vertical-align:baseline;">
+        On the Time Off Request content type tab in Designer, click <b>Edit content type columns </b>in the Customization section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 543px;"><img src="images/p1img265.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="aumv047" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Add Existing Site Column</b> from the New section of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="aumv048" /></div><div class="ExRight" style="vertical-align:baseline;">
+        From the Site Column Picker dialog, double-click the <b>Time Off Type</b> site column.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>You can easily find your site columns by typing <code>Time</code> in the search field.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 566px;"><img src="images/p1img264.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="aumv049" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Add the remaining Time Off columns by repeating the above steps in the following order:</p><p> </p><p>Time Off Hours</p><p>Time Off Comment</p><p>Time Off Start Date</p><p>Time Off Return Date</p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>If your Add Existing Site Column button is disabled in the ribbon, click anywhere in the Columns editor.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 791px;"><img src="images/p1img263.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="aumv0410" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>Every list and library in SharePoint has a Title column. However, we don't need it for our Time Off Request list. We cannot delete it, but we can hide it.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="aumv0411" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Property</b> field of the Title column. After a moment, a pull-down menu will appear.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 794px;"><img src="images/p1img262.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="aumv0412" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the down arrow to open the pull-down menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 262px;"><img src="images/p1img261.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="aumv0413" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Hidden</b> from the list. Your site columns list should look like this:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 697px;"><img src="images/p1img260.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="aumv0414" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="aumv0415" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Still in SharePoint Designer, click <b>Lists and Libraries</b> in the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 269px;"><img src="images/p1img259.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="aumv0416" /></div><div class="ExRight" style="vertical-align:baseline;">
+        From the New section of the ribbon, click <b>Custom List</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 423px;"><img src="images/p1img258.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="aumv0417" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the "Create list or document library" dialog, enter the following:</p><p> </p><p>Name: <code><strong>Time Off Requests</strong></code></p><p>Description: <code><strong>Employee time off requests</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 827px;"><img src="images/p1img257.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="aumv0418" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="aumv0419" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the <b>Time Off Requests</b> list by clicking the list name in the "Lists and Libraries" tab.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 365px;"><img src="images/p1img256.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="aumv0420" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Settings section, select <b>Allow management of content types</b> and <b>Display this list on the Quick Launch</b>. Clear "Allow attachments."
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Click OK to accept the Designer warning when clearing the "Allow attachments" checkbox.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 443px;"><img src="images/p1img255.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="aumv0421" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add the Time Off Request content type by clicking the <b>Add</b> button in the Content Types section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 797px;"><img src="images/p1img254.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="aumv0422" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Content Types Picker dialog, select the <b>Time Off Request</b> content type.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 288px;"><img src="images/p1img253.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="aumv0423" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="aumv0424" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the new content type by clicking to the right of the content type title.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 678px;"><img src="images/p1img252.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="aumv0425" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Set as Default</b> from the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 184px;"><img src="images/p1img251.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="aumv0426" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>Item</b> content type using the same technique for selecting the Time Off Request in a previous step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 678px;"><img src="images/p1img250.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="aumv0427" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Delete</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 265px;"><img src="images/p1img249.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="aumv0428" /></div><div class="ExRight" style="vertical-align:baseline;">
+        A Confirm Delete dialog will appear. Click <b>Yes</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 465px;"><img src="images/p1img248.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="aumv0429" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a new default view for the Time Off Request list by clicking <b>New</b> in the Views section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 678px;"><img src="images/p1img247.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="aumv0430" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Name the new list view <code><b>All Requests<br /></b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="aumv0431" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set this new view as the default view by selecting the checkbox <b>Make this the default view</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 723px;"><img src="images/p1img246.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="aumv0432" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 641px;"><img src="images/p1img245.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="aumv0433" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Preview in Browser</b> from the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 391px;"><img src="images/p1img244.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="aumv0434" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In Internet Explorer, select <b>new item</b> to add a new request.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 852px;"><img src="images/p1img243.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="aumv0435" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Enter the following test values for the new time-off request:</p><p> </p><p>Time Off Type: <code><strong>Vacation</strong></code><br />
+Time Off Hours: <code><strong>16</strong></code></p><p>Time Off Comment: <code><strong>Long weekend</strong></code><br />
+Time Off Start Date: <code><strong>[This Friday]</strong></code><br />
+Time Off Return Date <code><strong>[The following Tuesday]</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 665px;"><img src="images/p1img242.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="aumv0436" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="aumv0437" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Customize the All Requests view by clicking <b>All Requests</b>, then clicking the ellipsis (<b>. . .</b>) to the right of <b>All Items</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 603px;"><img src="images/p1img241.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="aumv0438" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Modify this View</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 717px;"><img src="images/p1img240.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="aumv0439" /></div><div class="ExRight" style="vertical-align:baseline;">
+        On the Edit View page in the Columns section, clear the Title column.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="aumv0440" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Still in the Columns section, select the following columns and set the order:</p><p> </p><table border="1" cellpadding="8" cellspacing="0" style="width:80%"><tbody><tr><td><strong>Column Name</strong></td><td><strong>Position From Left</strong></td></tr><tr><td>Created By</td><td>1</td></tr><tr><td>Time Off Hours</td><td>2</td></tr><tr><td>Time Off Comment</td><td>3</td></tr><tr><td>Time Off Start Date</td><td>4</td></tr><tr><td>Time Off Return Date</td><td>5</td></tr></tbody></table>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 550px;"><img src="images/p1img239.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="aumv0441" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Sort section of the Edit View page, change the "First sort by the column" pull-down to <strong>ID</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="aumv0442" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the sort order by selecting the <b>Show items in descending order</b> radio button.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 413px;"><img src="images/p1img238.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="aumv0443" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Scroll down the page to the <b>Group By</b> section.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="aumv0444" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Expand the Group By section by clicking the small plus sign.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 364px;"><img src="images/p1img237.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="aumv0445" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the "First group by the column" field to <b>Time Off Type</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 412px;"><img src="images/p1img236.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="aumv0446" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Still in the Group By section, change the default groupings to <b>Expanded</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 309px;"><img src="images/p1img235.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="aumv0447" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Scroll to the bottom of the page and click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The All Requests view should look something like this:</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 819px;"><img src="images/p1img234.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You have created and tested a content type for time-off requests.</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

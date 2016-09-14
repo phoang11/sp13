@@ -1,0 +1,552 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 6.1</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 6.1</strong><br />
+            <strong>Connecting SQL Server Data to SharePoint</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong><p>Objective</p><p> </p><p>MSC manages a customer database in SQL Server. This is the best way to manage all of their customer information. Each department needs to leverage these contacts in their department site.</p><p> </p><p>In this exercise, you will</p><ul><li>Create an external content type for the Customer database table</li><li>Make an external list based on the external content type</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Creating an external content type</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="bzffkh0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your department site in SharePoint Designer 2013 if it is not already open.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="bzffkh1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>External Content Types</b> in the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 252px;"><img src="images/p2img68.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="bzffkh2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>External Content Type</strong> button in the New section of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 239px;"><img src="images/p2img67.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="bzffkh3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>New external content type</b> beside the word "Name" in the External Content Type Information section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 486px;"><img src="images/p2img66.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="bzffkh4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Name to <code><strong><em>[Island]</em><em>[Department]</em> Customers</strong></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 420px;"><img src="images/p2img65.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="bzffkh5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>New external content type</b> beside Display Name.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 488px;"><img src="images/p2img64.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="bzffkh6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Display Name to:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <code><strong><em>[Island]</em>&lt;Space&gt;<em>[Department]</em>&lt;Space&gt;Customers</strong></code>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 420px;"><img src="images/p2img63.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="bzffkh7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Confirm the namespace is <code>http://<em>[island]</em>.msc.com/sites/<em>[department]</em></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 444px;"><img src="images/p2img62.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="bzffkh8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the pull-down menu for <b>Office Item Type</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="bzffkh9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Contact</b> from the list.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 689px;"><img src="images/p2img61.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="bzffkh10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Make sure "Offline Sync for external list" is set to <b>Enabled</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 643px;"><img src="images/p2img60.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="bzffkh11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Click here to discover external data sources and define operations</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 731px;"><img src="images/p2img59.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exCheckPoint.jpg" /></div><div class="ExRight"><i>This will take you to the Operations Designer page.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="bzffkh12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>Add Connection</strong> button.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 237px;"><img src="images/p2img58.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="bzffkh13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>SQL Server</b> as the data source.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 458px;"><img src="images/p2img57.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="bzffkh14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The SQL Server Connection dialog will open.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="bzffkh15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the SQL Server Connection dialog, set the following information:</p><p>Database Server: <code><strong>MSCSERVER</strong></code></p><p>Database Name: <code><strong>MSC_Company_DB</strong></code><br />
+Name: <code><strong><em>[Island] [Department]</em> </strong><strong>Database</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 483px;"><img src="images/p2img56.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="bzffkh16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the radio button next to <b>Connect with Impersonated Custom Identity</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 430px;"><img src="images/p2img55.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="bzffkh17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Secure Store Application ID to <code><b>MSCTargetAppID<br /></b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Enter the name of the Secure Store Application ID exactly as it is provided above.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 485px;"><img src="images/p2img54.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="bzffkh18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="bzffkh19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Enter the following credentials when prompted for a username and password:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <div>Username: <code><strong>SharePointGroupAccount</strong></code></div><div>Password:		<code><b>Password1</b></code></div>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The MSC Company Database appears in the Data Source Explorer. Your database connection will appear as [Island] [Department] Database.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 524px;"><img src="images/p2img53.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="bzffkh20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the plus sign to the left of <strong><em>[Island] [Department]</em> Database</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="bzffkh21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the plus sign to the left of <b>Tables</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 317px;"><img src="images/p2img52.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exWarning.jpg" /></div><div class="ExRight"><strong>Warning! The first time you expand the MSC Customer Database objects, you may get a warning dialog. If so, click OK.</strong></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 507px;"><img src="images/p2img51.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="bzffkh22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Right-click the <b>CurrentCustomers</b> table.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 327px;"><img src="images/p2img50.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="bzffkh23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Create All Operations</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 458px;"><img src="images/p2img49.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>We are going to create five operations for create, read, update, and delete (CRUD) for the database.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="bzffkh24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Next </strong>in the All Operations dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 708px;"><img src="images/p2img48.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="bzffkh25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>BusinessEntityID</b> if not already selected.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="bzffkh26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the box next to <strong>Map to Identifier </strong>in the Properties pane if not already selected.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 313px;"><img src="images/p2img47.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>All operations require a unique identifier (key field).</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="bzffkh27" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Clear the box next to <strong>Suffix</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 302px;"><img src="images/p2img46.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="bzffkh28" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>BusinessEntityID</b> field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="bzffkh29" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Show in Picker</b> checkbox.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 283px;"><img src="images/p2img45.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="bzffkh30" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>FirstName</b> field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="bzffkh31" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Office Property to <b>First Name</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="bzffkh32" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Show in Picker</b> checkbox.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 403px;"><img src="images/p2img44.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="bzffkh33" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>LastName</b> field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="bzffkh34" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Office Property to <b>Last Name</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="bzffkh35" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Show in Picker</b> checkbox.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 409px;"><img src="images/p2img43.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="bzffkh36" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>PhoneNumber</b> field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="bzffkh37" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Office Property to <b>Business Telephone Number</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="bzffkh38" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Show in Picker</b> checkbox.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 403px;"><img src="images/p2img42.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="bzffkh39" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>EmailAddress</b> field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="bzffkh40" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Office Property to <b>Email 1 Address</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="bzffkh41" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Show in Picker</b> checkbox.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 405px;"><img src="images/p2img41.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="bzffkh42" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Next</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="bzffkh43" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Add Filter Parameter</b> on the Filter Parameters Configuration page.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 259px;"><img src="images/p2img40.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Large database tables and views can cause problems for SharePoint external content types. To be on the safe side, we are going to limit the number of Customer rows returned to 250.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="bzffkh44" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Filter Properties Data Source Element to <b>BusinessEntityID</b>, if not already set.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 422px;"><img src="images/p2img39.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="bzffkh45" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <u><strong>Click to Add</strong></u> link to open the Filter Configuration dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 367px;"><img src="images/p2img38.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="bzffkh46" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set these properties in the Filter Configuration dialog:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <div><div>New Filter: <code><strong>CustomerLimit</strong></code></div><div>		Filter Type:		<code><b>Limit</b></code></div></div><div>		Filter Field:		<code><b>BusinessEntityID</b></code></div>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 559px;"><img src="images/p2img37.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="bzffkh47" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="bzffkh48" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set Default Value to <code><b>250</b></code> in the Properties pane. Don't press <code>&lt;Enter&gt;</code> because the screen will close.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 307px;"><img src="images/p2img36.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Online attendees: Use the number keys under the function keys instead of the keypad (keypad may not work).</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        50.
+        <input type="checkbox" id="bzffkh49" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add Filter Parameter</b> button on the Filter Parameters Configuration page again to add another filter to return only customers from your department.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        51.
+        <input type="checkbox" id="bzffkh50" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Filter Properties Data Source Element to <code><b>Department</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 396px;"><img src="images/p2img35.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        52.
+        <input type="checkbox" id="bzffkh51" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <u><strong>Click to Add</strong></u> link to open the Filter Configuration dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 369px;"><img src="images/p2img34.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        53.
+        <input type="checkbox" id="bzffkh52" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set these properties in the Filter Configuration dialog:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  New Filter: <code><strong>DeptFilter</strong></code>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 533px;"><img src="images/p2img33.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        54.
+        <input type="checkbox" id="bzffkh53" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        55.
+        <input type="checkbox" id="bzffkh54" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set Default Value to <em><code><strong>[Department]</strong></code></em> in the Properties pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Replace <em>[Department]</em> with your department name.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 303px;"><img src="images/p2img32.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        56.
+        <input type="checkbox" id="bzffkh55" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add one more filter to return only customers from your island. Click <b>Add Filter Parameter</b> on the Filter Parameters Configuration page.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        57.
+        <input type="checkbox" id="bzffkh56" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Filter Properties Data Source Element to <code><b>Region</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 328px;"><img src="images/p2img31.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        58.
+        <input type="checkbox" id="bzffkh57" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <u><strong>Click to Add</strong></u> link to open the Filter Configuration dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        59.
+        <input type="checkbox" id="bzffkh58" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set this property in the Filter Configuration dialog:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  New Filter: <code><strong>RegionFilter</strong></code>
+              </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        60.
+        <input type="checkbox" id="bzffkh59" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Properties pane, set the Default Value to <em><code><strong>[Island]</strong></code></em>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Replace [Island] with your island name.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 870px;"><img src="images/p2img30.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        61.
+        <input type="checkbox" id="bzffkh60" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Finish</b> to complete the Operations creation.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        62.
+        <input type="checkbox" id="bzffkh61" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Summary View</strong> in the Views section of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 252px;"><img src="images/p2img29.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        63.
+        <input type="checkbox" id="bzffkh62" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>BusinessEntityID</b> from the Fields section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 477px;"><img src="images/p2img28.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        64.
+        <input type="checkbox" id="bzffkh63" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>Set as Title</strong> button in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 119px;"><img src="images/p2img27.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i><p>External Content Types become External Lists. All lists have a required Title column. To make our SQL Server content work with a SharePoint list, it will need to have a Title field defined.</p><p> </p><p>Occasionally, Designer will show the Set as Title field as disabled. To fix this, close and reopen your site in Designer. Then, go back into the external content type and set the title.</p></i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        65.
+        <input type="checkbox" id="bzffkh64" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Making an external list</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        66.
+        <input type="checkbox" id="bzffkh65" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Lists and Libraries</b> in the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 269px;"><img src="images/p2img26.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        67.
+        <input type="checkbox" id="bzffkh66" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <strong>External List</strong> from the New group in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 193px;"><img src="images/p2img25.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        68.
+        <input type="checkbox" id="bzffkh67" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the External Content Types Picker dialog, select <strong><em>[Island][Department]</em>Customers</strong> under your department site URL.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 519px;"><img src="images/p2img24.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        69.
+        <input type="checkbox" id="bzffkh68" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        70.
+        <input type="checkbox" id="bzffkh69" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Fill in the following fields in the Create External List dialog:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <p>Name: <code><strong>Customers</strong></code></p><p>Description: <code><strong><em>[Island]</em> region <em>[department]</em> customers</strong></code></p>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 663px;"><img src="images/p2img23.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Replace <code>[Island]</code> with your island and <code>[department]</code> with your department.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        71.
+        <input type="checkbox" id="bzffkh70" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        72.
+        <input type="checkbox" id="bzffkh71" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Customers</b> in the External Lists group.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 466px;"><img src="images/p2img22.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        73.
+        <input type="checkbox" id="bzffkh72" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Press <code>&lt;F12&gt;</code> or click <strong>Preview in Browser</strong> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 904px;"><img src="images/p2img21.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>That's SQL table data in SharePoint! In an upcoming exercise, you will format the data for an improved presentation.</i></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You now have direct access to your department's customers from SharePoint!</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

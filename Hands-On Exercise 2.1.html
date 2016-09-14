@@ -1,0 +1,247 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 2.1</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 2.1</strong><br />
+            <strong>Navigating to Your Department Site</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong>Objective</strong></div></div><div class="ExRow"><div class="ExText"><strong>The IT department has created a site collection for each department in the islands in which MSC operates. You are the site administrator for your department—responsible for modifying the site to meet your department’s needs.</strong></div></div><div class="ExRow"><div class="ExText"><strong><p>In this exercise, you will</p><ul><li>Navigage to your department’s SharePoint site collection top level site from IE to support communication and collaboration</li><li>Create a blog subsite from Designer</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Navigating to your site</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="mf5by00" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Using Internet Explorer, navigate to the MSC portal SharePoint site at <code>http://home.msc.com</code>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>To the right of the address bar in IE, you can press the Home button, which has been set to the MSC portal site.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 74px;"><img src="images/1533b1x2x1x1a.PNG" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="mf5by01" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click your island icon to open your island's portal site.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Your island portal site can also be accessed via <code>http://<em>[island]</em>.msc.com</code> where [island] is the name of your island.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="mf5by02" /></div><div class="ExRight" style="vertical-align:baseline;">
+        From your island portal site, click your department's top-level site.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Your department can also be accessed via <code>http://<em>[island]</em>.msc.com/sites/<em>[dept]</em></code>, where <code><em>[island]</em></code> is the name of your island and <em><code>[dept]</code></em> is the name of your department.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="mf5by03" /></div><div class="ExRight" style="vertical-align:baseline;">
+        If your Favorites bar is not showing, right-click the top of IE and select <strong>Favorites bar</strong> from the pull-down list. After the Favorites bar is showing, click the <strong>Add to favorites bar</strong> button in the top left of your browser to create a button in the Favorites bar for your site.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>Use the Favorites button in Internet Explorer.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 478px;"><img src="images/p1img288.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Creating a department blog site using SharePoint Designer</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="mf5by04" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Start SharePoint Designer by clicking <strong>Windows Start menu | All Programs | Microsoft Office 2013 | SharePoint Designer 2013</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>If prompted, enter user name and initials, and then click OK.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="mf5by05" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Open Site</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 77px;"><img src="images/1533b1x2x1x6.PNG" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="mf5by06" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Open Site dialog box, enter a Site Name of <code><strong>http://<em>[island]</em>.msc.com/sites/<em>[department]</em></strong></code> and click <strong>Open</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>If prompted, enter a user name of <code><em>[island]</em>.<em>[department]</em></code> and the password <code>pw</code> and then click OK.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exCheckPoint.jpg" /></div><div class="ExRight"><i>This will take you to the information page of the home site. If the site information page is not displayed, close and open SharePoint Designer to refresh the page.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="mf5by07" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Make sure the <b>SITE</b> tab is selected in the ribbon, then click the <b>Subsite</b> icon in the New section of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 640px;"><img src="images/p1img287.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="mf5by08" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Specify the location of the new Web site" field of the New dialog, enter <code><strong>blog</strong></code> for the site URL so that the address of the site is: <code><strong>http://<em>[island]</em>.msc.com/sites/<em>[department]</em>/blog</strong></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="mf5by09" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Blog</b> as the template and click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 849px;"><img src="images/p1img286.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exCheckPoint.jpg" /></div><div class="ExRight"><i><p>A new instance of SharePoint Designer will open, with the new site just created and a summary page of site information displayed.</p><p> </p><p>SharePoint Designer can display only one site, or subsite, at a time. If you want to work with multiple sites at the same time, you need to have multiple copies (instances) of SharePoint Designer open.</p></i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="mf5by010" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Close the previous instance of SharePoint Designer to avoid confusion about which site we are working on.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>You may want to maximize SharePoint Designer so that it is easier to work with.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="mf5by011" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Site Information section, click <strong>Blog</strong> and enter <code><strong><em>[Department]</em> blog</strong></code> in the text box. Then press <code>&lt;Enter&gt;</code>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 660px;"><img src="images/p1img285.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="mf5by012" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>Save</strong> icon in the Quick Access Toolbar at the top left of SharePoint Designer (you can also save by pressing <code>&lt;Ctrl&gt;&lt;S&gt;</code>).
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 375px;"><img src="images/p1img284.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="mf5by013" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Customizationsection, click the <b>Edit site home page</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 618px;"><img src="images/p1img283.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exCheckPoint.jpg" /></div><div class="ExRight"><i>A default.aspx tab displaying the <code>default.aspx</code> page will open in SharePoint Designer.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 555px;"><img src="images/p1img282.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Notice that you can only view your pages in Code view in Designer 2013, so most page editing should be done in the browser. We'll revisit code view in a future exercise.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="mf5by014" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Right-click the <b>default.aspx</b> tab and select <b>Close</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 264px;"><img src="images/p1img281.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="mf5by015" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Let's take a look at our blog site. Click <b>Preview in Browser</b> from the Manage section of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 447px;"><img src="images/p1img280.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 795px;"><img src="images/p1img279.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="mf5by016" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Close Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="mf5by017" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Close SharePoint Designer.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You have built two sites for your department using both the web browser and SharePoint Designer.</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

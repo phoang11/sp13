@@ -1,0 +1,283 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 2.2</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 2.2</strong><br />
+            <strong>Working With Site Columns</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong>Objective</strong></div></div><div class="ExRow"><div class="ExText"><strong>Before MSC began to expand, it was simple to keep track of who was on vacation or just taking a much-needed day off. Now that we have grown, we need a better way to keep track of who’s in and who’s out.</strong></div></div><div class="ExRow"><div class="ExText">
+                  <p>In this exercise, you will</p><ul><li>Create site columns for the Time Off content type</li></ul>
+              </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Creating site columns for the Time Off content type</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="pjojec0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your department site in SharePoint Designer 2013.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>You can open your site by double-clicking it from the top of the Recent Sites list in Designer.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 382px;"><img src="images/p1img278.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="pjojec1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Site Columns</b> in the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 302px;"><img src="images/p1img277.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="pjojec2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Create the first site column by clicking <b>New Column</b> in the New section of the ribbon and selecting <b>Choice</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 76px;"><img src="images/1533b1x2x2x3.PNG" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="pjojec3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Enter the following in the "Create a Site Column" dialog box and click <strong>OK</strong>:</p><p> </p><p>Name: <code><strong>Time Off Type</strong></code></p><p>Description: <code><strong>Type of time off request</strong></code></p><p>New Group: <code>_<em><strong>[Department]</strong></em></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 446px;"><img src="images/p1img276.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>An underscore prefix was added to the group name so that your group will appear at the top of the list of site columns.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="pjojec4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Enter the following in the Column Editor dialog:</p><p> </p><table border="0" cellpadding="0" cellspacing="0" style="width:80%"><tbody><tr><td style="width: 40%;">Choices:</td><td style="width: 60%;"><strong><code>Vacation</code></strong></td></tr><tr><td> </td><td><code><strong>Personal</strong></code></td></tr><tr><td> </td><td><strong><code>Sick</code></strong></td></tr><tr><td>Default value:</td><td><strong><code>Vacation</code></strong></td></tr><tr><td>Other:</td><td>Clear <strong>Allow blank values?</strong></td></tr></tbody></table>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 486px;"><img src="images/p1img275.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="pjojec5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="pjojec6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save your work by clicking the <strong>Save</strong> button or pressing <code>&lt;Ctrl&gt;&lt;S&gt;</code>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>You should now have one site column listed under your <code>_<em>[Department]</em></code> group.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 650px;"><img src="images/p1img274.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="pjojec7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add another column by clicking <b>New Column</b> in the ribbon, and select <b>Number</b> from the New Column pull-down menu.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="pjojec8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Enter the following in the "Create a Site Column" dialog box:</p><p> </p><p>Name: <code><strong>Time Off Hours</strong></code></p><p>Existing group: <strong><code>_<em>[Department]</em></code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 476px;"><img src="images/p1img273.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="pjojec9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="pjojec10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Using what you have just learned, create the following site columns and add them to the existing site column group <code>_<em>[Department]</em></code>:</p><p> </p><table border="1" cellpadding="8" cellspacing="0" style="width:80%"><tbody><tr><td><strong>Name</strong></td><td><strong>Type</strong></td></tr><tr><td><strong><code>Time Off Comment</code></strong></td><td>Multi-Lines of Text</td></tr><tr><td><strong><code>Time Off Start Date</code></strong></td><td>Date &amp; Time</td></tr><tr><td><strong><code>Time Off Return Date</code></strong></td><td>Date &amp; Time</td></tr></tbody></table>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>We are prefixing each site column name with the words "Time Off" so that they are easy to locate when we use them in content types.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="pjojec11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work. Your Site Columns tab should look like this:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 813px;"><img src="images/p1img272.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i><p>We need to change some settings for the site columns we just created, by selecting the column and clicking Column Settings in the Edit section of the ribbon.</p><p> </p><p>You can also edit column settings by double-clicking the column name.</p></i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="pjojec12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Configure the Time Off Comment site column's settings by double-clicking <b>Time Off Comment</b> in the Site Columns list.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="pjojec13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Column Editor dialog, make sure the checkbox for "Rich text" is cleared.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 530px;"><img src="images/p1img271.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="pjojec14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="pjojec15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Double-click <b>Time Off Hours</b> in the Site Columns list.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="pjojec16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Clear the "Allow blank values" checkbox.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="pjojec17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the "Number of decimal places" to <b>None (whole numbers)</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 432px;"><img src="images/p1img270.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="pjojec18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="pjojec19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the Time Off Start Date site column for editing.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="pjojec20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Column Editor, clear "Allow blank values."
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 424px;"><img src="images/p1img269.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="pjojec21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="pjojec22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the Time Off Return Date site column for editing.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="pjojec23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Column Editor, clear "Allow blank values."
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="pjojec24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="pjojec25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="pjojec26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Close the <b>Site Columns</b> tab in Designer.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You have created new site columns for the Time Off Request content type to be developed in the next exercise.</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

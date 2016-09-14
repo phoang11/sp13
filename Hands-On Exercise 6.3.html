@@ -1,0 +1,379 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 6.3</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 6.3</strong><br />
+            <strong>Conditional Formatting With Client-Side Rendering</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong>Objective</strong></div></div><div class="ExRow"><div class="ExText"><strong>The salespeople from each department want a quick visual indicator to let them know which customers are spending less this quarter than they did last quarter.</strong></div></div><div class="ExRow"><div class="ExText"><strong><p>In this exercise, you will</p><ul><li>Disable Minimal Download Strategy (MDS)</li><li>Reformat the currency columns</li><li>Add up and down arrows based on this quarter's performance</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Disable Minimal Download Strategy (MDS)</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="p1ba3m0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        If not already open, open Internet Explorer and go to your department's home page.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i><code>http://[island].msc.com/sites/[department]</code></i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="p1ba3m1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Go to the <b>Site Settings</b> page.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="p1ba3m2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Manage Site Features</b> in the Site Actions section.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="p1ba3m3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Deactivate</b> next to the Minimal Download Strategy feature.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 843px;"><img src="images/p2img13.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Reformatting the currency columns</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="p1ba3m4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        From the Quick Launch, click the <b>Customers</b> list to open the list.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="p1ba3m5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>LIST</b> tab | <b>Modify View</b>. Set the column order to the following settings:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <table border="1" cellpadding="8" cellspacing="0" style="width:400px"><tbody><tr><td><strong>Columns to Display</strong></td><td><strong>Position from Left</strong></td></tr><tr><td>BusinessEntityID</td><td>1</td></tr><tr><td>FirstName</td><td>2</td></tr><tr><td>LastName</td><td>3</td></tr><tr><td>PhoneNumber</td><td>4</td></tr><tr><td>EmailAddress</td><td>5</td></tr><tr><td>AddressLine1</td><td>6</td></tr><tr><td>CurrentQtrRevenue</td><td>7</td></tr><tr><td>PreviousQtrRevenue</td><td>8</td></tr></tbody></table>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 692px;"><img src="images/p2img12.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="p1ba3m6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to save the view changes.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Enabling the Display Template in the Site Assets library</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="p1ba3m7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        To store Display Templates in the Site Assets library, the JavaScript Display Template content type must be added. Click <b>Site Settings  </b><b>| Site Contents</b> | <b>Site Assets</b> to go to the Site Assets library.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="p1ba3m8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>LIBRARY</b> tab | <b>Library Settings</b> | <b>Advanced settings</b> for the Site Assets library.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="p1ba3m9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Yes </b>for "Allow management of content types," and click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="p1ba3m10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Back on the Site Assets Settings page, scroll down to the Content Types section.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="p1ba3m11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Add from existing site content types</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="p1ba3m12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add the <b>JavaScript Display Template</b> and click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 543px;"><img src="images/p2img11.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="p1ba3m13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Customers</b> list in the Quick Launch.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="p1ba3m14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Site Settings</strong> | <strong>Edit Page</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 28px;"><img src="images/1533-B1-6-3-15.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 192px;"><img src="images/p2img10.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="p1ba3m15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Customers</b> Web Part title to select it.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="p1ba3m16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the ribbon, click <b>Web Part | Web Part Properties</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="p1ba3m17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Scroll over to the right to view the Web Part properties, and scroll to the bottom to see the Miscellaneous properties.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="p1ba3m18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>+</b> sign beside <b>Miscellaneous</b> to expand the miscellaneous section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 394px;"><img src="images/p2img9.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="p1ba3m19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Scroll down and set the JS Link field to:</p><p> </p><p><code><strong>~sitecollection/SiteAssets/SalesFormat.js</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="p1ba3m20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="p1ba3m21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the ribbon, click <strong>Page tab | </strong><strong>Stop Editing</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 190px;"><img src="images/p2img8.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="p1ba3m22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        If not already open, open SharePoint Designer and open your department's home page.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i><code>http://[island].msc.com/sites/[department]</code></i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="p1ba3m23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In SharePoint Designer, select <b>Site Assets</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="p1ba3m24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Asset</b> drop-down in the New section of the ribbon and select <b>JavaScript</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 141px;"><img src="images/p2img7.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="p1ba3m25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the name of the new JavaScript file to <code><b>SalesFormat.js</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 450px;"><img src="images/p2img6.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="p1ba3m26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <code>SalesFormat.js</code> filename to open the summary page.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="p1ba3m27" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Manage all file properties in the browser</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="p1ba3m28" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Edit the item in Internet Explorer by clicking the <b>View</b> tab in the ribbon and selecting <b>Edit Item</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="p1ba3m29" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following settings:</p><p> </p><p>Content Type: <strong>JavaScript Display Template</strong></p><p>Title: <code><strong>Sales Format Client Side Rendering</strong></code></p><p>Target Control Type: <strong>View</strong></p><p>Standalone: <strong>Override</strong></p><p>Target Scope: <strong>/</strong></p><p>Target List Template ID: <strong>600</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 579px;"><img src="images/p2img5.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="p1ba3m30" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="p1ba3m31" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Return to SharePoint Designer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="p1ba3m32" /></div><div class="ExRight" style="vertical-align:baseline;">
+        On the <code>SalesFormat.js</code> summary page, click <strong>Edit File</strong> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="p1ba3m33" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Add the CSR function framework:</p><p> </p><p><strong><code>(function () {</code></strong></p><p><br /><code><strong>})();</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>You can skip steps 34 through 39 by copying the contents of <code>C:\Course Files\SalesFormat1.txt</code> to the <code>SalesFormat.js</code> file.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="p1ba3m34" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Next, insert the first variable for the CurrentQtrRevenue field into the function so it looks like this:</p><p> </p><p><strong><code>(function () {</code></strong></p><p> </p><p><strong><code>  // Format Current Quarter Revenue</code></strong></p><p><code><strong>  var CurrQtrFieldCtx = {};</strong></code></p><p> </p><p><code><strong>})();</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="p1ba3m35" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>After the variable declaration, add the template object:</p><p> </p><p><strong><code>CurrQtrFieldCtx.Templates = {};</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="p1ba3m36" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Add the field formatting. Unlike the example from the slides for replacing the last name, you will perform the formatting in functions:</p><p> </p><p><code><strong>CurrQtrFieldCtx.Templates.Fields = {</strong><br /><strong>   "CurrentQtrRevenue": {"View": CurrQtrFieldViewTemplate}</strong><br /><strong>};</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="p1ba3m37" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Register the override template:</p><p> </p><p><strong><code>SPClientTemplates.TemplateManager.RegisterTemplateOverrides</code></strong></p><p><strong><code>(</code></strong></p><p><code><strong>CurrQtrFieldCtx</strong><br /><strong>);</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i><p>The overriding functions are fairly simple. The formula is:</p><ol start="1" style="list-style-type: lower-alpha;"><li>Declare a local variable and set it equal to the current field value.</li><li>Return a reformatted/enhanced value in its place.</li></ol></i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="p1ba3m38" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>After the main CSR function, add this function:</p><p> </p><p><code><strong>function CurrQtrFieldViewTemplate(ctx) {</strong><br /><br /><strong>       var _CurrQtrValue = </strong></code></p><p><code><strong>       Number(ctx.CurrentItem.CurrentQtrRevenue);</strong><br /><br /><strong>       return "$" + _CurrQtrValue.toFixed(2);</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>This function will place a dollar sign in front of the Current Quarter Revenue and reformat the number so that only two decimal places appear.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="p1ba3m39" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save your work and return to the browser.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="p1ba3m40" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Customers</b> list in the Quick Launch to verify that the $ was added to the CurrentQtyRevenue column.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 342px;"><img src="images/p2img4.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="p1ba3m41" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Return to Designer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="p1ba3m42" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Go to edit the <code>SalesFormat.js</code> file.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="p1ba3m43" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the file <code>C:\Course Files\SalesFormat2.txt</code>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="p1ba3m44" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Copy the contents.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="p1ba3m45" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Delete the contents of the <code>SalesFormat.js</code> and replace it with the contents from <code>SalesFormat2.txt</code>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="p1ba3m46" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save your work and go back to IE and refresh your page. The $ should be added to the Previous Qtr Revenue column.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 667px;"><img src="images/p2img3.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Adding up and down arrows based on this quarter's performance</strong></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>We want an indicator to show if the current quarter is better than the last quarter for each customer. A green up arrow means better performance. A red down arrow means poorer performance than the current quarter.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="p1ba3m47" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Copy the contents of <code>SalesFormat3.txt</code> to the <code>SalesFormat.js</code> file in Designer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="p1ba3m48" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        50.
+        <input type="checkbox" id="p1ba3m49" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Preview the customers list in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 899px;"><img src="images/p2img2.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You are now in control of how information is displayed in a SharePoint list.</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

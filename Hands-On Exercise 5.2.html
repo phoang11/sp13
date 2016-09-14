@@ -1,0 +1,871 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 5.2</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 5.2</strong><br />
+            <strong>Creating Looping Workflow Segments</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong><p>Objectives</p><p> </p><p>Project managers have asked for a way to recall a project budget submission in case they need to make a change before or during the Manager Approval Cycle.</p><p> </p><p>In this exercise, you will</p><ul><li>Create the project manager and manager approval process</li><li>Improve the review cycle between the project manager and the manager using a workflow loop</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Creating the project manager and manager approval processes</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="a3ppt10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your department site in SharePoint Designer 2013 if it is not already open.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="a3ppt11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Lists and Libraries</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 319px;"><img src="images/p2img197.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="a3ppt12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Internal Project Documents</b> library in Designer.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 330px;"><img src="images/p2img196.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="a3ppt13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>List Workflow</strong> from the New section of the ribbon on the Internal Projects Documents page.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 244px;"><img src="images/p2img195.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="a3ppt14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Create List Workflow dialog, name the workflow <code><b>Internal Project Budget Review</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 662px;"><img src="images/p2img194.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="a3ppt15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="a3ppt16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Internal Project Budget Review</b> in the breadcrumb trail.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 394px;"><img src="images/p2img193.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="a3ppt17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the checkbox next to <b>Start workflow automatically when an item is created </b>in the Start Options section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 567px;"><img src="images/p2img192.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="a3ppt18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Task List setting in the Settings section to <b>New Task List</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 522px;"><img src="images/p2img191.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="a3ppt19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> at the Designer warning message box.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="a3ppt110" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Yes</b> at the "Create new Task List" message box.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 365px;"><img src="images/p2img190.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="a3ppt111" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="a3ppt112" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Open task list </b>in the Customization section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 294px;"><img src="images/p2img189.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The new Internal Project Budget Review Tasks list will open in Designer.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="a3ppt113" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Add</b> in the Content Types section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 566px;"><img src="images/p2img188.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="a3ppt114" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>Project Document Workflow Task</b> in the Content Type Picker dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 366px;"><img src="images/p2img187.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="a3ppt115" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="a3ppt116" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Workflows</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 247px;"><img src="images/p2img186.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="a3ppt117" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Internal Project Budget Review</b> workflow in the List Workflows group.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 372px;"><img src="images/p2img185.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="a3ppt118" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Edit workflow</b> in the Customization section.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 286px;"><img src="images/p2img184.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="a3ppt119" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the title of the first stage to <code><b>Start Budget Review</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 416px;"><img src="images/p2img183.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="a3ppt120" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="a3ppt121" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Views</strong> in the Manage group of the ribbon to switch to the Visual Designer view.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 314px;"><img src="images/p2img182.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="a3ppt122" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Log to history list</b> action to the Start Budget Review stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 813px;"><img src="images/p2img181.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="a3ppt123" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Settings</b> icon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 305px;"><img src="images/p2img180.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="a3ppt124" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Message</b> from the Settings menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 252px;"><img src="images/p2img179.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="a3ppt125" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>ellipsis</strong> next to the Message field.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 524px;"><img src="images/p2img178.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="a3ppt126" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Type the following in the String Builder dialog:</p><p> </p><p><strong><code>Internal budget approval started.</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="a3ppt127" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK </b>to close the String Builder.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="a3ppt128" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> again to close the "Log to History List Properties."
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="a3ppt129" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="a3ppt130" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Drag and drop an <b>Add time to date</b> action to the right of the "Log to history list" action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 715px;"><img src="images/p2img177.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="a3ppt131" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Settings</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="a3ppt132" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Value</b> from the Settings menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 266px;"><img src="images/p2img176.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The "Add Time to Date Properties" dialog will open.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="a3ppt133" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Hours field to <code><b>24</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="a3ppt134" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> button to the right of the Date field.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 561px;"><img src="images/p2img175.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="a3ppt135" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set "Data source" to <b>Current Item</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="a3ppt136" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change "Field from source" to <b>Created</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 493px;"><img src="images/p2img174.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="a3ppt137" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="a3ppt138" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Output field to <b>Create a new variable</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 541px;"><img src="images/p2img173.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="a3ppt139" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Edit Variable dialog, set the Name field to <code><b>Manager Review Due Date</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 267px;"><img src="images/p2img172.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="a3ppt140" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="a3ppt141" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> again to close the "Add Time to Date Properties" dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 445px;"><img src="images/p2img171.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="a3ppt142" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save your work by clicking the <b>Save</b> button.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Back to Text-based Designer</strong></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>When creating complex workflows, such as this one, it's simpler to construct most of the workflow in Text-Designer and alternate back to Visual Designer to visualize how the process will flow.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="a3ppt143" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Views</strong> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Your workflow should look like this:</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 919px;"><img src="images/p2img170.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="a3ppt144" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the <b>Start Budget Review</b> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 386px;"><img src="images/p2img169.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="a3ppt145" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a new stage.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="a3ppt146" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the name of the new stage to <code><strong>Manager Review Cycle</strong></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 376px;"><img src="images/p2img168.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="a3ppt147" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor at the beginning of the <b>Manager Review Cycle</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 333px;"><img src="images/p2img167.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="a3ppt148" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Type the word <code><strong>Step</strong></code> and press <code>&lt;Enter&gt;</code>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 466px;"><img src="images/p2img166.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        50.
+        <input type="checkbox" id="a3ppt149" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the name of the new step to <code><b>Budget Review</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        51.
+        <input type="checkbox" id="a3ppt150" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor in the <b>Budget Review</b> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 346px;"><img src="images/p2img165.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        52.
+        <input type="checkbox" id="a3ppt151" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add an <b>Assign a task</b> action into the Budget Review step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 304px;"><img src="images/p2img164.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        53.
+        <input type="checkbox" id="a3ppt152" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>this user</strong></u> link in the "Assign a Task" action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The "Assign a Task" dialog will open.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        54.
+        <input type="checkbox" id="a3ppt153" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Participant field to <b>User who created current item</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        55.
+        <input type="checkbox" id="a3ppt154" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Enter the following for the Task Title:</p><p> </p><p><code><strong>Internal Project Budget: Manager Review Requested</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        56.
+        <input type="checkbox" id="a3ppt155" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Open edit for body</b> button below the Description field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        57.
+        <input type="checkbox" id="a3ppt156" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the String Builder dialog, type the following:</p><p> </p><p><code><strong>Please review the</strong> &lt;Space&gt;</code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        58.
+        <input type="checkbox" id="a3ppt157" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add or Change Lookup</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        59.
+        <input type="checkbox" id="a3ppt158" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Lookup for String" dialog, set the following values:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <div>Data source: <strong>Current Item</strong></div><div>	Field from source:	<b>Project Name</b></div>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 493px;"><img src="images/p2img163.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        60.
+        <input type="checkbox" id="a3ppt159" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        61.
+        <input type="checkbox" id="a3ppt160" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Still in the String Builder, type the following:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <code>&lt;Space&gt;<strong> budget submitted by </strong>&lt;Space&gt;</code>
+              </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        62.
+        <input type="checkbox" id="a3ppt161" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add or Change Lookup</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        63.
+        <input type="checkbox" id="a3ppt162" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Lookup for String" dialog, set the following values:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <div><div>Data source: <strong>Current Item</strong></div><div>	Field from source:	<b>Created By</b></div></div><div>Return field as:<b>	Display Name</b></div>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 493px;"><img src="images/p2img162.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        64.
+        <input type="checkbox" id="a3ppt163" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        65.
+        <input type="checkbox" id="a3ppt164" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Type <code>&lt;Space&gt;<b> by </b>&lt;Space&gt;</code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        66.
+        <input type="checkbox" id="a3ppt165" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add or Change Lookup</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        67.
+        <input type="checkbox" id="a3ppt166" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Lookup for String" dialog, set the following values:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <div><div>Data source: <strong>Workflow Variables and Parameters</strong></div><div>	Field from source:	<b>Variable: Manager Review Due Date</b></div></div><div>Return field as:<b>	Long Date</b></div>
+              </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        68.
+        <input type="checkbox" id="a3ppt167" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        69.
+        <input type="checkbox" id="a3ppt168" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Type the following:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <code><strong>. Edit the task and select Approve or Reject to complete this request.</strong></code>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 643px;"><img src="images/p2img161.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        70.
+        <input type="checkbox" id="a3ppt169" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to close the String Builder.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        71.
+        <input type="checkbox" id="a3ppt170" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> button to the right of the Due Date field.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 695px;"><img src="images/p2img160.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        72.
+        <input type="checkbox" id="a3ppt171" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the following values in the "Lookup for Date/Time" dialog:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <div>Data source: <strong>Workflow Variables and Parameters</strong></div><div>	Field from source:	<b>Variable: Manager Review Due Date</b></div>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 493px;"><img src="images/p2img159.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        73.
+        <input type="checkbox" id="a3ppt172" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        74.
+        <input type="checkbox" id="a3ppt173" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Assign a Task" dialog, click the inverted chevron for <b>Email Options</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 314px;"><img src="images/p2img158.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        75.
+        <input type="checkbox" id="a3ppt174" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the box next to <b>Send Task Overdue Email(s)</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 481px;"><img src="images/p2img157.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        76.
+        <input type="checkbox" id="a3ppt175" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Review the "Assign a Task" dialog and click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 637px;"><img src="images/p2img156.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        77.
+        <input type="checkbox" id="a3ppt176" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>Variable: Outcome</strong></u> link in the "Assign a Task" action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        78.
+        <input type="checkbox" id="a3ppt177" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Create a new variable</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 405px;"><img src="images/p2img155.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        79.
+        <input type="checkbox" id="a3ppt178" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Edit Variable dialog, type <code><b>Manager Review Outcome</b></code> in the Name field.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 267px;"><img src="images/p2img154.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        80.
+        <input type="checkbox" id="a3ppt179" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        81.
+        <input type="checkbox" id="a3ppt180" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Improve the review cycle between the project manager and the manager using a workflow loop</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        82.
+        <input type="checkbox" id="a3ppt181" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor below the <b>Assign a Task</b> action in the <b>Budget Review</b> step.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 335px;"><img src="images/p2img153.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        83.
+        <input type="checkbox" id="a3ppt182" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>Loop</strong> button in the Insert group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 474px;"><img src="images/p2img152.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        84.
+        <input type="checkbox" id="a3ppt183" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Loop with Condition</b> from the Loop menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 364px;"><img src="images/p2img151.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        85.
+        <input type="checkbox" id="a3ppt184" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Rename the loop <code><b>Budget Loop</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 533px;"><img src="images/p2img150.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        86.
+        <input type="checkbox" id="a3ppt185" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the first <u><strong>value</strong></u> link.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 547px;"><img src="images/p2img149.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        87.
+        <input type="checkbox" id="a3ppt186" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> button to the right of the first Value field in the LoopCondtion Properties dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 524px;"><img src="images/p2img148.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        88.
+        <input type="checkbox" id="a3ppt187" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Define Workflow Lookup dialog, set the following values:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <div>Data source: <strong>Workflow Variables and Parameters</strong></div><div>	Field from source:	<b>Variable: Manager Review Outcome</b></div>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 493px;"><img src="images/p2img147.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        89.
+        <input type="checkbox" id="a3ppt188" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        90.
+        <input type="checkbox" id="a3ppt189" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Operator to <b>not equals</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 503px;"><img src="images/p2img146.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        91.
+        <input type="checkbox" id="a3ppt190" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the down arrow in the second <b>Value</b> field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        92.
+        <input type="checkbox" id="a3ppt191" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Approved</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 465px;"><img src="images/p2img145.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        93.
+        <input type="checkbox" id="a3ppt192" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        94.
+        <input type="checkbox" id="a3ppt193" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>These settings will cause this part of the workflow to loop until the manager has approved the task.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        95.
+        <input type="checkbox" id="a3ppt194" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor in the <b>Budget Loop</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 264px;"><img src="images/p2img144.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        96.
+        <input type="checkbox" id="a3ppt195" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Type <code><strong>Log</strong></code> and press <code>&lt;Enter&gt;</code> to add a "Log to History List" action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        97.
+        <input type="checkbox" id="a3ppt196" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>message</strong></u> link in the "Log to History List" action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        98.
+        <input type="checkbox" id="a3ppt197" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Type the following in the message field:</p><p> </p><p><strong><code>Manager review loop started.</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        99.
+        <input type="checkbox" id="a3ppt198" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor below the <b>Log to History List</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 391px;"><img src="images/p2img143.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        100.
+        <input type="checkbox" id="a3ppt199" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Type <code><strong>Assign</strong></code> and press <code>&lt;Enter&gt;</code>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        101.
+        <input type="checkbox" id="a3ppt1100" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>this user</strong></u> link.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 352px;"><img src="images/p2img142.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        102.
+        <input type="checkbox" id="a3ppt1101" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Assign a Task" dialog, set the Participant to <b>User who created current item</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        103.
+        <input type="checkbox" id="a3ppt1102" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the Task Title to:</p><p> </p><p><code><strong>Internal Project Budget: Update Requested by Manager</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        104.
+        <input type="checkbox" id="a3ppt1103" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Open editor for body</b> button below the Description field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        105.
+        <input type="checkbox" id="a3ppt1104" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the String Builder, type the following:</p><p> </p><p><code><strong>The manager has rejected your</strong> &lt;Space&gt;</code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        106.
+        <input type="checkbox" id="a3ppt1105" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add or Change Lookup</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        107.
+        <input type="checkbox" id="a3ppt1106" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the "Lookup for String" dialog values to the following:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <div>Data source <strong>Current Item</strong></div><div>	Field from source:	<b>Project Name</b></div>
+              </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        108.
+        <input type="checkbox" id="a3ppt1107" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        109.
+        <input type="checkbox" id="a3ppt1108" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Complete the String Builder by typing the following:</p><p> </p><p><code>&lt;Space&gt;<strong> budget. Please update the budget. When you are finished, mark the related task as Complete.</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 643px;"><img src="images/p2img141.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        110.
+        <input type="checkbox" id="a3ppt1109" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        111.
+        <input type="checkbox" id="a3ppt1110" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the inverted chevron for <b>Outcome Options</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 323px;"><img src="images/p2img140.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        112.
+        <input type="checkbox" id="a3ppt1111" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the "Task content type" to <b>Project Document Workflow Task</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>A red message will appear below the "Task content type" field. We have already applied the content type to the workflow task list. It is safe to ignore this warning.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        113.
+        <input type="checkbox" id="a3ppt1112" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Default Outcome field to <b>Complete</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 647px;"><img src="images/p2img139.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        114.
+        <input type="checkbox" id="a3ppt1113" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        115.
+        <input type="checkbox" id="a3ppt1114" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Still in the "Assign a Task" action, click the <u><strong>Variable: Outcome1</strong></u> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        116.
+        <input type="checkbox" id="a3ppt1115" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Choose <b>Create a new variable</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 436px;"><img src="images/p2img138.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        117.
+        <input type="checkbox" id="a3ppt1116" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Name field of the Edit Variable dialog to <strong><code>Budget Update Outcome</code></strong>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        118.
+        <input type="checkbox" id="a3ppt1117" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        119.
+        <input type="checkbox" id="a3ppt1118" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        120.
+        <input type="checkbox" id="a3ppt1119" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Below the "Assign a Task" action of the Budget Loop, add a <b>Log to History List</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        121.
+        <input type="checkbox" id="a3ppt1120" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>message</strong></u> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        122.
+        <input type="checkbox" id="a3ppt1121" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the message to <code><b>Budget returned to submitter</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        123.
+        <input type="checkbox" id="a3ppt1122" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the entire line of the first "Assign a Task" action in the Budget Review step by clicking to the right of the <strong>TaskID</strong> variable. It's the one <em>before the Budget loop!</em>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 893px;"><img src="images/p2img137.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        124.
+        <input type="checkbox" id="a3ppt1123" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the down arrow.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 411px;"><img src="images/p2img136.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        125.
+        <input type="checkbox" id="a3ppt1124" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Copy Action</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 324px;"><img src="images/p2img135.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        126.
+        <input type="checkbox" id="a3ppt1125" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor at the end of the <b>Budget Loop</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 396px;"><img src="images/p2img134.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        127.
+        <input type="checkbox" id="a3ppt1126" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <strong>Paste</strong> button in the Clipboard group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 303px;"><img src="images/p2img133.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        128.
+        <input type="checkbox" id="a3ppt1127" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Start Budget Review stage, click the <u><strong>End of Workflow</strong></u> link.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 330px;"><img src="images/p2img132.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        129.
+        <input type="checkbox" id="a3ppt1128" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Manager Review Cycle</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 352px;"><img src="images/p2img131.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        130.
+        <input type="checkbox" id="a3ppt1129" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the cursor in the <b>Transition to Stage</b> section of the Manager Review Cycle.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 264px;"><img src="images/p2img130.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        131.
+        <input type="checkbox" id="a3ppt1130" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Type <code><strong>Go</strong></code> and press <code>&lt;Enter&gt;</code>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        132.
+        <input type="checkbox" id="a3ppt1131" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <u><strong>a stage</strong></u> link in the "Go to a Stage" action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        133.
+        <input type="checkbox" id="a3ppt1132" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>End of Workflow</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exCheckPoint.jpg" /></div><div class="ExRight"><i>The complete workflow should look like this in Text-Based Designer view:</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 902px;"><img src="images/p2img129.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        134.
+        <input type="checkbox" id="a3ppt1133" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Save</strong> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        135.
+        <input type="checkbox" id="a3ppt1134" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Views</strong> in the ribbon to switch to Visual Designer.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Using Text-Based Designer is recommended due to the complexity of some workflows. Use Visual Designer for validation.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        136.
+        <input type="checkbox" id="a3ppt1135" /></div><div class="ExRight" style="vertical-align:baseline;">
+        For a high-level view of the workflow, click <strong>Generate Stage Outline</strong> in the Manage group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 463px;"><img src="images/p2img128.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        137.
+        <input type="checkbox" id="a3ppt1136" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Check for Errors</strong> in the Save group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The Publish button in the ribbon is not available when you are in Stage Outline mode.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        138.
+        <input type="checkbox" id="a3ppt1137" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Views</strong> in the ribbon, and select <strong>Text-Based Designer</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        139.
+        <input type="checkbox" id="a3ppt1138" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Publish</strong> in the ribbon to publish the workflow.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        140.
+        <input type="checkbox" id="a3ppt1139" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Right-click the <b>Internal Project Budget Review</b> tab.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        141.
+        <input type="checkbox" id="a3ppt1140" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Close All Tabs</b> from the menu.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You have added your first loop to a SharePoint 2013 workflow.</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

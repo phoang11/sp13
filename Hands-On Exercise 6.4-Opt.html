@@ -1,0 +1,621 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Optional Hands-On Exercise 6.4</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Optional Hands-On Exercise 6.4</strong><br />
+            <strong>Connecting a Workflow to a Web Service</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong>Objective</strong></div></div><div class="ExRow"><div class="ExText"><strong>Employees have asked for a weather service app on their department home pages. We are going to create a workflow to get weather information for our island from a web service and display it on the home page.</strong></div></div><div class="ExRow"><div class="ExText"><strong><p>In this exercise, you will</p><ul><li>Create a Local Weather list for the five-day forecast</li><li>Build a workflow to run each day that gets the local five-day forecast from a weather web service</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Creating the Local Weather lists</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="o0daps0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your department site in SharePoint Designer 2013 if it is not already open.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i><code>http://[island].msc.com/sites/[department]</code></i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="o0daps1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        From the Lists and Libraries in Site Objects, click <b>SharePoint List</b> in the ribbon and select <b>Promoted Links</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="o0daps2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Name the list <code><b>Local Weather</b></code> and click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>This list will hold our weather information from the web service.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 274px;"><img src="images/p3img215.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="o0daps3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Local Weather</b> link to open the list for editing.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="o0daps4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Edit list columns</b> link and click the <b>Description</b> row to select the Description column.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="o0daps5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Column Settings </b>in the ribbon, select <b>Rich Text (Bold, ...) </b>and<b> Enhanced Rich Text</b>. Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 481px;"><img src="images/p3img214.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="o0daps6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save your work.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Removing the "Get started with your site" Web Part and replacing it with the Local Weather Web Part</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="o0daps7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        If not already open, open Internet Explorer and go to your department's home page.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i><code>http://[island].msc.com/sites/[department]</code></i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="o0daps8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>EDIT</b> in the upper right corner.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="o0daps9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Delete the "Get started with your site" Web Part by clicking <b>REMOVE THIS</b> next to the "Get started with your site" title.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 482px;"><img src="images/p3img213.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>We will replace this list with our insert, the Local Weather list Web Part.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="o0daps10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the cursor in the top zone (box) on the page.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 305px;"><img src="images/p3img212.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="o0daps11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>INSERT</b> tab in the ribbon. Click <b>App Part</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="o0daps12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select<b> Local Weather</b> and click the <b>Add</b> button at the right of the screen.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>This will place an empty promoted list app on the page.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 629px;"><img src="images/p3img211.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="o0daps13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> in the ribbon.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Building weather workflow</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="o0daps14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Return to SharePoint Designer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="o0daps15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Workflows</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 299px;"><img src="images/p3img210.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="o0daps16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Site Workflow</b> button in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="o0daps17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Name the workflow <code><b>Get Local Weather<br /></b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 683px;"><img src="images/p3img209.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="o0daps18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="o0daps19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Rename the first stage <code><b>Initialize Variables</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 567px;"><img src="images/p3img208.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="o0daps20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor within the <b>Initialize Variables</b> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 302px;"><img src="images/p3img207.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="o0daps21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Set Workflow Variable</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="o0daps22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>workflow variable</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="o0daps23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Create a new variable</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 303px;"><img src="images/p3img206.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="o0daps24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following values in the Edit Variable dialog:</p><p> </p><p>Name: <strong><code>Index</code></strong></p><p>Type: <strong>Integer</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="o0daps25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="o0daps26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>value</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="o0daps27" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Type <code><strong>0</strong></code> as the value and press <code>&lt;Enter&gt;</code>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 255px;"><img src="images/p3img205.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="o0daps28" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the <b>Set Workflow Variable</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 303px;"><img src="images/p3img204.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="o0daps29" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add another <b>Set Workflow Variable</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="o0daps30" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>workflow variable</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="o0daps31" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Create a new variable</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 292px;"><img src="images/p3img203.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="o0daps32" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following values in the Edit Variable dialog:</p><p> </p><p>Name: <code><strong>Region</strong></code></p><p>Type: <strong>String</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="o0daps33" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="o0daps34" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>value</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="o0daps35" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Type your island name (e.g., <code>Hawaii</code>).
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="o0daps36" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor below the <b>Initialize Variables</b> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 572px;"><img src="images/p3img202.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="o0daps37" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a new stage and name it <code><b>Get Weather Service</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 772px;"><img src="images/p3img201.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="o0daps38" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor in the <strong>Transition to stage</strong> section of the Initialize Variables stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 366px;"><img src="images/p3img200.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="o0daps39" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Go to a Stage</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="o0daps40" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the "Go to a Stage" action to <b>Get Weather Service</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 315px;"><img src="images/p3img199.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="o0daps41" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor in the <b>Get Weather Service</b> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 328px;"><img src="images/p3img198.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="o0daps42" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Call HTTP Web Service</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="o0daps43" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>this</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="o0daps44" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the Course Files folder at <code>C:\Course Files</code>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="o0daps45" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the <code>WebServiceURL.txt</code> file.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="o0daps46" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Copy and paste the content of the file into the HTTP web service URL field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="o0daps47" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Replace the <em><code>[Your Region Here]</code></em> text with your island (e.g., <code>Hawaii</code>).
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 663px;"><img src="images/p3img197.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="o0daps48" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        50.
+        <input type="checkbox" id="o0daps49" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>response</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        51.
+        <input type="checkbox" id="o0daps50" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Create a new variable</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 403px;"><img src="images/p3img196.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        52.
+        <input type="checkbox" id="o0daps51" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the name to <code><b>Weather Content</b></code> in the Edit Variable dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        53.
+        <input type="checkbox" id="o0daps52" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 267px;"><img src="images/p3img195.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 756px;"><img src="images/p3img194.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        54.
+        <input type="checkbox" id="o0daps53" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Below the Call Action, add a <b>Count Items in Dictionary</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        55.
+        <input type="checkbox" id="o0daps54" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the "Count Items in Dictionary" action, set these values:</p><p> </p><p>Dictionary: <code><strong>Variable: Weather Content</strong></code></p><p>Output Variable: <code><strong>Item Count</strong></code> (new Integer variable)</p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 267px;"><img src="images/p3img193.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 577px;"><img src="images/p3img192.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        56.
+        <input type="checkbox" id="o0daps55" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor below the <b>Count Items in Dictionary</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 658px;"><img src="images/p3img191.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        57.
+        <input type="checkbox" id="o0daps56" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Loop n Times</b> container.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 266px;"><img src="images/p3img190.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        58.
+        <input type="checkbox" id="o0daps57" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>1</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        59.
+        <input type="checkbox" id="o0daps58" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>The LoopNTimes Properties dialog opens. Set the following values:</p><p> </p><p>Title: <code><strong>Forecast Loop</strong></code></p><p>RepeatCount: <code><strong>Variable: Item Count</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 465px;"><img src="images/p3img189.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        60.
+        <input type="checkbox" id="o0daps59" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        61.
+        <input type="checkbox" id="o0daps60" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the Forecast Loop, add a <b>Get an Item from a Dictionary</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        62.
+        <input type="checkbox" id="o0daps61" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the action properties:</p><p> </p><p>Item path: <strong>(<code>[%Variable: Index%])/Region</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 245px;"><img src="images/p3img188.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Click the ellipsis (...), click the "Add or Change" lookup button, and select workflow Variable: Index.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        63.
+        <input type="checkbox" id="o0daps62" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>dictionary</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        64.
+        <input type="checkbox" id="o0daps63" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Weather Content</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 322px;"><img src="images/p3img187.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        65.
+        <input type="checkbox" id="o0daps64" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>item</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        66.
+        <input type="checkbox" id="o0daps65" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Create a new variable</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        67.
+        <input type="checkbox" id="o0daps66" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the Edit Variable values:</p><p> </p><p>Name: <code><strong>WxRegion</strong></code></p><p>Type: <strong>String</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exWarning.jpg" /></div><div class="ExRight"><strong>Warning! All names related to getting information from the web service are case-sensitive.</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        68.
+        <input type="checkbox" id="o0daps67" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add the <strong>Get an item by name or path from dictionary</strong> action for each of the following values. Do not forget the opening and closing parenthesis around the variable.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>You can copy and paste the Get Item actions.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <p><strong>Day of Week</strong></p><p>Item Path: <code><strong>(</strong>[%Variable: Index%]<strong>)</strong>/DayOfWeek</code></p><p>Dictionary: <code>Variable: Weather Content</code></p><p>Output Item: <code>Variable: WxDay</code> (new String variable)</p>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <p><strong>High Temp</strong></p><p>Item Path: <code><strong>(</strong>[%Variable: Index%]<strong>)</strong>/FHigh</code></p><p>(If you prefer, you can use <code>CHigh</code> for Celsius)</p><p>Dictionary: <code>Variable: Weather Content</code></p><p>Output Item: <code>Variable: WxHigh </code>(new String variable)</p>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <p><strong>Low Temp</strong></p><p>Item Path: <code><strong>(</strong>[%Variable: Index%]<strong>)</strong>/FLow</code></p><p>(If you prefer, you can use <code>CLow</code> for Celsius)</p><p>Dictionary: <code>Variable: Weather Content</code></p><p>Output Item: <code>Variable: WxLow </code>(new String variable)</p>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <p><strong>Graphic URL</strong></p><p>Item Path: <code><strong>(</strong>[%Variable: Index%]<strong>)</strong>/GraphicURL</code></p><p>Dictionary: <code>Variable: Weather Content</code></p><p>Output Item: <code>Variable: WxURL </code>(new String variable)</p>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+                  <p><strong>Summary</strong></p><p>Item Path: <code><strong>(</strong>[%Variable: Index%]<strong>)</strong>/Summary</code></p><p>Dictionary: <code>Variable: Weather Content</code></p><p>Output Item: <code>Variable: WxSummary </code>(new String variable)</p>
+              </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 765px;"><img src="images/p3img186.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        69.
+        <input type="checkbox" id="o0daps68" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Still in the Forecast Loop, create a new workflow variable for the weather description that will be displayed to the user.</p><p> </p><p>Add a <strong>Set Workflow Variable</strong> action below the Get Item actions.</p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 819px;"><img src="images/p3img185.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        70.
+        <input type="checkbox" id="o0daps69" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following value:</p><p> </p><p>Workflow variable: <code><strong>WxDescription</strong></code> (new <strong>String</strong> variable)</p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        71.
+        <input type="checkbox" id="o0daps70" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>value</b> link and open the String Builder.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        72.
+        <input type="checkbox" id="o0daps71" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the text file <code>C:\Course Files\WxDescription.txt</code>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        73.
+        <input type="checkbox" id="o0daps72" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Copy and paste the contents into the String Builder, but <em>do not</em> hit OK yet!
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        74.
+        <input type="checkbox" id="o0daps73" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Highlight and replace the Variables using the<b> Add or Change Lookup</b> button. Make sure you select everything between and including the opening and closing brackets.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 608px;"><img src="images/p3img184.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>When complete, the String Builder will look like this:</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 490px;"><img src="images/p3img183.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        75.
+        <input type="checkbox" id="o0daps74" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        76.
+        <input type="checkbox" id="o0daps75" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the Set Variable: WxDescription action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 344px;"><img src="images/p3img182.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        77.
+        <input type="checkbox" id="o0daps76" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Create List Item</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        78.
+        <input type="checkbox" id="o0daps77" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Click the <strong>this list</strong> link and set the following field values by selecting the field and clicking the <strong>Modify</strong> button:</p><p> </p><p>This list: <code><strong>Local Weather</strong></code></p><p> </p><p>Fields:</p><p style="margin-left: 40px;">Title: <code><strong>Variable: WxDay</strong></code><br />
+Link Location <code><strong>Variable: WxURL</strong></code></p><p style="margin-left: 40px;">Launch Behavior: <code><strong>In page navigation</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        79.
+        <input type="checkbox" id="o0daps78" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>You will need to click the <strong>Add</strong> button to add the remaining value pairs:</p><p> </p><p>Order: <code><strong>Variable: Index</strong></code><br />
+Background Image Location: <code><strong>Variable: WxURL</strong></code><br />
+Description: <code><strong>Variable: WxDescription</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 493px;"><img src="images/p3img181.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        80.
+        <input type="checkbox" id="o0daps79" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        81.
+        <input type="checkbox" id="o0daps80" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the <b>Create List Item</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 294px;"><img src="images/p3img180.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        82.
+        <input type="checkbox" id="o0daps81" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add the action <b>Do Calculation</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        83.
+        <input type="checkbox" id="o0daps82" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set these values:</p><p> </p><p>First value: <code><strong>Variable: Index</strong></code></p><p>Operator: <code><strong>plus</strong></code></p><p>Second value: <code><strong>1</strong></code></p><p>Output item: <code><strong>Variable: New Index</strong></code></p><p>(new Number variable)</p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 520px;"><img src="images/p3img179.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        84.
+        <input type="checkbox" id="o0daps83" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the <b>Do Calculation</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 240px;"><img src="images/p3img178.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        85.
+        <input type="checkbox" id="o0daps84" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Add a <strong>Set Workflow Variable</strong> action. Set these values:</p><p> </p><p>Workflow variable: <code><strong>Variable: Index</strong></code><br />
+Value: <code><strong>Variable: New Index</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The complete loop should look like this:</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 824px;"><img src="images/1533b2.6.4.86.jpg" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        86.
+        <input type="checkbox" id="o0daps85" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Transition to stage" section of Get Local Weather Service, add a <b>Go to Stage</b> action and set stage to <code><b>End of Workflow</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 237px;"><img src="images/p3img176.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        87.
+        <input type="checkbox" id="o0daps86" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the ribbon, click <b>Check for Errors</b>.If there are no errors, click<b> Publish</b> to publish the workflow. If there are errors, fix the errors and click <b>Save</b> and <b>Publish</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 189px;"><img src="images/p3img175.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Testing the Weather Service workflow</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        88.
+        <input type="checkbox" id="o0daps87" /></div><div class="ExRight" style="vertical-align:baseline;">
+        If not already open, open Internet Explorer and go to your department's home page.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i><code>http://[island].msc.com/sites/[department]</code></i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        89.
+        <input type="checkbox" id="o0daps88" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Settings</strong> <strong>| Site Contents</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 28px;"><img src="images/1533-B1-6-4-89.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        90.
+        <input type="checkbox" id="o0daps89" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>SITE WORKFLOWS</b> near the upper right corner.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 219px;"><img src="images/p3img174.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        91.
+        <input type="checkbox" id="o0daps90" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Get Local Weather</b> workflow.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        92.
+        <input type="checkbox" id="o0daps91" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Go to your home page. Your Local Weather Web Part should look like this:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 841px;"><img src="images/p3img173.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You have weather!</strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

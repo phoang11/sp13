@@ -1,0 +1,577 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 7.4</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 7.4</strong><br />
+            <strong>SharePoint Data Views</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong>Objectives</strong></div></div><div class="ExRow"><div class="ExText"><strong>Display customer work orders using the SharePoint Data View app.</strong></div></div><div class="ExRow"><div class="ExText"><strong><p>In this exercise, you will</p><ul><li>Link SharePoint to customer work orders</li><li>Use Data Views to create a master/detail customer work order site</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Linking SharePoint to customer work orders</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="avyqlq0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open your department site in Designer if it is not already open.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="avyqlq1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>External Content Types</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 316px;"><img src="images/p3img56.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="avyqlq2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>External Content Type</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="avyqlq3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the following values in the External Content Type Information section:</p><p> </p><p>Name: <code><strong><em>[Island][Department]</em>WorkOrders</strong></code><br />
+Display Name: <code><strong><em>[Island] [Department]</em> Work Orders</strong></code><br />
+Office Item Type: <strong>Task</strong></p><p>Offline Sync for external list: <strong>Enabled</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 612px;"><img src="images/p3img55.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="avyqlq4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the link to set the external data source.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 655px;"><img src="images/p3img54.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="avyqlq5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Expand the <strong><em>[Island] [Department]</em> Database Tables</strong> folder.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="avyqlq6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Right-click the <b>CustomerWorkOrders</b> table.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="avyqlq7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Create All Operations</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 446px;"><img src="images/p3img53.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="avyqlq8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Next</b> in the All Operations dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="avyqlq9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>OrderID</b> field on the Parameters Configuration page.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="avyqlq10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Check <b>Map to Identifier</b> in the Properties pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 867px;"><img src="images/p3img52.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="avyqlq11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>Task</b> field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="avyqlq12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Office Property to <b>Subject</b> in the Properties pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 475px;"><img src="images/p3img51.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="avyqlq13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>StartDate</b> field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="avyqlq14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the Office Property to <code><strong>StartDate</strong></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="avyqlq15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>DueDate</b> field.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="avyqlq16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Office Property to <code><strong>DueDate</strong></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="avyqlq17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Next</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="avyqlq18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add Filter Parameter</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="avyqlq19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a filter parameter by clicking <b>(Click to Add)</b> in the Properties.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="avyqlq20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Name the filter <code><strong>LimitFilter</strong></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="avyqlq21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Change the filter type to <b>Limit</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="avyqlq22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="avyqlq23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the Default Value to <code><b>2000</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="avyqlq24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Finish</b> and <b>Save</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="avyqlq25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Create Lists &amp; Form</b> button in the ribbon, and set the List Name to <b>Work Orders</b> in the Create List and Form dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 607px;"><img src="images/p3img50.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="avyqlq26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="avyqlq27" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the Work Orders list in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>There are almost 2,000 work orders listed. Later in the exercise, you will filter this down to only work orders related to your department's customers.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 696px;"><img src="images/p3img49.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="avyqlq28" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Close Internet Explorer.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Creating a data view web page</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="avyqlq29" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Site Pages</b> from the Site Objects pane.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 285px;"><img src="images/p3img48.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="avyqlq30" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Web Part Page</b> button in the New ribbon group.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="avyqlq31" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the top-left template.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 574px;"><img src="images/p3img47.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="avyqlq32" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the page name to <code><strong>CustomerWork.aspx</strong></code>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 267px;"><img src="images/p3img46.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="avyqlq33" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Right-click <b>CustomerWork.aspx</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="avyqlq34" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Edit File in Advanced Mode </b>from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 485px;"><img src="images/p3img45.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The code view of <code>CustomerWork.aspx</code> will open in Designer:</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 698px;"><img src="images/p3img44.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="avyqlq35" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Locate the last closing <code>&lt;div&gt;</code> tag in the code view. Place your cursor immediately after the tag.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 538px;"><img src="images/p3img43.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="avyqlq36" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Press <code>&lt;Enter&gt;</code>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="avyqlq37" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>INSERT</b> tab in the ribbon and click the <b>HTML</b> button in the Controls group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 333px;"><img src="images/p3img42.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="avyqlq38" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <code>&lt;div&gt;</code> tag.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 216px;"><img src="images/p3img41.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>You should now have new opening and closing <code>&lt;div&gt;</code> tags.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 177px;"><img src="images/p3img40.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="avyqlq39" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>If a warning message appears, click Yes to close it.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="avyqlq40" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place your cursor between the two <code>&lt;div&gt;</code> tags.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="avyqlq41" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>INSERT</b> tab of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="avyqlq42" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Data View</b> button in the Data Views &amp; Forms group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 435px;"><img src="images/p3img39.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="avyqlq43" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Scroll down the Data View menu and select <b>Customers</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 375px;"><img src="images/p3img38.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="avyqlq44" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Scroll down the page until you get to the <code>&lt;XmlDefinition&gt;</code> tag. Place your cursor anywhere within that tag body, such as immediately to the right of the <code>&lt;XmlDefinition&gt;</code> tag.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>It is important that you activate the data view controls by placing the cursor within the data view code.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 567px;"><img src="images/p3img37.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="avyqlq45" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="avyqlq46" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add/Remove Columns</b> button in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 194px;"><img src="images/p3img36.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="avyqlq47" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Remove all but the following fields in the Displayed Fields dialog:</p><ul><li>BusinessEntityID</li><li>FirstName</li><li>LastName</li><li>PhoneNumber</li><li>EmailAddress</li></ul>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 533px;"><img src="images/p3img35.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="avyqlq48" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>You may have noticed the code change. The number for <code>&lt;ViewFields&gt;</code> has been reduced. We could edit the code directly, but using the ribbon commands saves time and reduces the risk of errors.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        50.
+        <input type="checkbox" id="avyqlq49" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Paging</b> button in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 153px;"><img src="images/p3img34.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        51.
+        <input type="checkbox" id="avyqlq50" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <strong>Display Sets of 10 Items</strong> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 268px;"><img src="images/p3img33.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i><p>Here is the corresponding code:</p><p> </p><p><code>&lt;RowLimit Paged="TRUE"&gt;10&lt;/RowLimit&gt;</code></p></i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        52.
+        <input type="checkbox" id="avyqlq51" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Sort &amp; Group</b> from the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 344px;"><img src="images/p3img32.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        53.
+        <input type="checkbox" id="avyqlq52" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>BusinessEntityID</b> from the "Available fields" list.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        54.
+        <input type="checkbox" id="avyqlq53" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add</b> button to add it to the "Sort order" list.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 712px;"><img src="images/p3img31.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        55.
+        <input type="checkbox" id="avyqlq54" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        56.
+        <input type="checkbox" id="avyqlq55" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b>.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Adding a related data view for work orders</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        57.
+        <input type="checkbox" id="avyqlq56" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Find the closing <code>&lt;div&gt;</code> tag located at the end of the data view Web Part added in previous steps.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>You can search for <code>&lt;/div&gt;</code> by pressing <code>&lt;Ctrl&gt;&lt;F&gt;</code>.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 683px;"><img src="images/p3img30.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>When searching for tags, click the Find All button to get a list of tag locations. In this case, we want the last <code>&lt;/div&gt;</code> tag.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 831px;"><img src="images/p3img29.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        58.
+        <input type="checkbox" id="avyqlq57" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the cursor just before the <code>&lt;/div&gt;</code> tag.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 417px;"><img src="images/p3img28.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        59.
+        <input type="checkbox" id="avyqlq58" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>INSERT</b> ribbon tab.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        60.
+        <input type="checkbox" id="avyqlq59" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Data View</b> button in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        61.
+        <input type="checkbox" id="avyqlq60" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>Work Orders</b> from the menu.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 407px;"><img src="images/p3img27.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        62.
+        <input type="checkbox" id="avyqlq61" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place your cursor anywhere within the new data view, such as immediately to the right of the <code>&lt;XmlDefinition&gt;</code> tag.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        63.
+        <input type="checkbox" id="avyqlq62" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <strong>Add/Remove Columns</strong> from the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        64.
+        <input type="checkbox" id="avyqlq63" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Remove <b>BusinessEntityID</b> from the list of Displayed Fields.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 330px;"><img src="images/p3img26.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        65.
+        <input type="checkbox" id="avyqlq64" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        66.
+        <input type="checkbox" id="avyqlq65" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>Sort &amp; Group</b> button in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        67.
+        <input type="checkbox" id="avyqlq66" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add <b>StartDate</b> to the "Sort order" list.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 696px;"><img src="images/p3img25.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        68.
+        <input type="checkbox" id="avyqlq67" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Connecting the data views</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        69.
+        <input type="checkbox" id="avyqlq68" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place your cursor in the Customers data view.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>Look for this segment of code to identify the Customers data view:</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 462px;"><img src="images/p3img24.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        70.
+        <input type="checkbox" id="avyqlq69" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Add Connection</b> in the Connections group of the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 247px;"><img src="images/p3img23.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        71.
+        <input type="checkbox" id="avyqlq70" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Next</b> in the Web Part Connections Wizard.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 546px;"><img src="images/p3img22.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        72.
+        <input type="checkbox" id="avyqlq71" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Next</b> again.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 581px;"><img src="images/p3img21.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        73.
+        <input type="checkbox" id="avyqlq72" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Next</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 394px;"><img src="images/p3img20.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        74.
+        <input type="checkbox" id="avyqlq73" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Set the first field in the second row for Columns in Customers to <b>BusinessEntityID</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 441px;"><img src="images/p3img19.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        75.
+        <input type="checkbox" id="avyqlq74" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Next</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 402px;"><img src="images/p3img18.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        76.
+        <input type="checkbox" id="avyqlq75" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Finish</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        77.
+        <input type="checkbox" id="avyqlq76" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b>.
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Reviewing your work</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        78.
+        <input type="checkbox" id="avyqlq77" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Open the <code>CustomerWork.aspx</code> page in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        79.
+        <input type="checkbox" id="avyqlq78" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click one of the diagonal double arrows in the top data view.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 191px;"><img src="images/p3img17.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The related work order information will be displayed in the bottom data view.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 777px;"><img src="images/p3img16.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Enhance the Data View Web Part presentation</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        80.
+        <input type="checkbox" id="avyqlq79" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In SharePoint Designer, click inside the Customers data view in the <code>CustomerWork.aspx</code> file.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        81.
+        <input type="checkbox" id="avyqlq80" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>DESIGN</b> tab.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        82.
+        <input type="checkbox" id="avyqlq81" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the View Style section of the ribbon, choose the second style box from the right.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 773px;"><img src="images/p3img15.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        83.
+        <input type="checkbox" id="avyqlq82" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        84.
+        <input type="checkbox" id="avyqlq83" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <b>Preview</b> your work in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 841px;"><img src="images/p3img14.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You have created a master/detail data view page.</strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exBonus.jpg" /></div><div class="ExRight"><strong>Connect Outlook to the Work Orders list using what you learned in Exercise 6.2.</strong></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 763px;"><img src="images/p3img13.png" /></div>
+      </div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+

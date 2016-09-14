@@ -1,0 +1,555 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Exercise Manual Viewer Version 1.0.1402.5 -->
+    <meta charset="utf-8">
+    <title>Exercise Manual Viewer: Hands-On Exercise 3.3</title>
+    <link href="jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <link href="DynEx.css" rel="stylesheet" />
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        $(function ()
+        {
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion({
+                header: "> div.ExFold",
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+
+            $("#accordion0, #accordion1, #accordion2, #accordion3").accordion(
+                "option",
+                "icons",
+                { 'header': 'ui-icon-triangle-1-e', 'activeHeader': 'ui-icon-triangle-1-se' });
+
+            $(".copyable code").mouseover(
+                function ()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    var codeTag = codeElement[0];
+                    var pasteStr = codeTag.textContent ? 
+                        codeTag.textContent : codeTag.innerText;
+                    var copySite = $("#copysite");
+                    copySite.val(pasteStr/*unescapeHTML(pasteStr)*/);
+                    copySite.select();
+                    preElement.css("background-color", "#f0f0ff");
+                    preElement.css("border-color", "#4040ff");
+                    preElement.children("div").css("display", "block");
+                });
+
+            $(".copyable code").mouseout(
+                function()
+                {
+                    var codeElement = $(this);
+                    var preElement = codeElement.parent();
+                    preElement.css("background-color", "white");
+                    preElement.css("border-color", "white");
+                    preElement.children("div").css("display", "none");
+                });
+
+            var localStorageOK = hasLocalStorage();
+            if (hasLocalStorage)
+            {
+                $('input:checkbox').click(function () {
+                    var $this = $(this);
+                    if ($this.is(':checked')) {
+                        localStorage.setItem($this.attr("id"), "true");
+                    } else {
+                        localStorage.setItem($this.attr("id"), "false");
+                    }
+                });
+                $('input:radio').click(function () {
+                    var $this = $(this);
+                    var groupName = $this.attr('name');
+                    $('input:radio[name=' + groupName + ']')
+                        .each(function (index, radioItem) {
+                            var $radioItem = $(radioItem);
+                            if ($radioItem.is(':checked') && localStorageOK) {
+                                localStorage.setItem($radioItem.attr("id"), "true");
+                            } else {
+                                localStorage.setItem($radioItem.attr("id"), "false");
+                            }
+                        });
+                });
+                $('input:text, textarea').change(function () {
+                    var $this = $(this);
+                    var textVal = $this.val();
+                    localStorage.setItem($this.attr("id"), textVal);
+                });
+                $('input:checkbox, input:radio').each(function (index, chkItem) {
+                    var $chkItem = $(chkItem);
+                    var storedVal = localStorage.getItem($chkItem.attr("id"));
+                    $chkItem.prop("checked", storedVal && storedVal == "true");
+                });
+                $('input:text, textarea').each(function (index, inputItem) {
+                    var $inputItem = $(inputItem);
+                    var storedVal = localStorage.getItem($inputItem.attr("id"));
+                    if (storedVal)
+                        $inputItem.val(storedVal);
+                });
+            }
+        });
+
+    function unescapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\&amp;/g, '\&')
+            .replace(/\&quot;/g, '\"')
+            .replace(/\&#39;/g, '\'')
+            .replace(/\&lt;/g, '<')
+            .replace(/\&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ');
+    }
+
+    function escapeHTML(str)
+    {
+        return String(str)
+            .replace(/\n/g, '\r\n')
+            .replace(/\&/g, '&amp;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+    function hasLocalStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    }
+    </script>
+</head>
+<body>
+<form>
+    <div class="ExTitle">
+        <div style="width:70%; float:left;">
+            <strong>Hands-On Exercise 3.3</strong><br />
+            <strong>Stage Transitions and Communication</strong>
+        </div>
+        <div class="ExTitleLink">
+            <a href="index.html">Exercise list &hellip;</a>
+        </div>
+    </div>
+    <div class="ExHidden"><textarea style="width:1px; height:1px;" id="copysite"></textarea></div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  <div style="display:table;">
+    <div class="ExRow"><div class="ExText"><strong>Objective</strong></div></div><div class="ExRow"><div class="ExText"><strong>The Time Off Request process can be managed using multiple stages for ease of development and maintenance. </strong></div></div><div class="ExRow"><div class="ExText"><strong><p>In this exercise, you will</p><ul><li>Incorporate multiple stages into the time-off workflow</li></ul></strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Incorporating multiple stages into the time-off workflow</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        1.
+        <input type="checkbox" id="beohql0" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the workflow editor for the Time Off Request process, select the <b>Go to End of Workflow</b> condition and press <code>&lt;Delete&gt;</code> to remove it.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 881px;"><img src="images/p1img150.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        2.
+        <input type="checkbox" id="beohql1" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Insert a condition by clicking the <b>Condition</b> button in the ribbon and selecting <b>If any value equals value</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 386px;"><img src="images/p1img149.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Designer will insert an "If" block that looks like this:</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 795px;"><img src="images/p1img148.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        3.
+        <input type="checkbox" id="beohql2" /></div><div class="ExRight" style="vertical-align:baseline;">
+        To set a condition, click the first <b>value</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        4.
+        <input type="checkbox" id="beohql3" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <em><strong>fx</strong></em> function button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        5.
+        <input type="checkbox" id="beohql4" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set the condition to the following:</p><p> </p><p>Data Source: <code><strong>Workflow Variables and Parameters</strong></code></p><p>Field from source: <code><strong>Variable: Outcome</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        6.
+        <input type="checkbox" id="beohql5" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b> to close the Define Workflow Lookup dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        7.
+        <input type="checkbox" id="beohql6" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the second <b>value</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        8.
+        <input type="checkbox" id="beohql7" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Choose <b>Approved</b> from the pull-down list.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        9.
+        <input type="checkbox" id="beohql8" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place your orange cursor below the Time Off Approval stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 955px;"><img src="images/p1img147.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        10.
+        <input type="checkbox" id="beohql9" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Stage</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        11.
+        <input type="checkbox" id="beohql10" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Rename the stage <code><b>Request Approved</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        12.
+        <input type="checkbox" id="beohql11" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place your cursor below the <b>Request Approved</b> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 714px;"><img src="images/p1img146.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        13.
+        <input type="checkbox" id="beohql12" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Insert another stage by clicking <b>Stage</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        14.
+        <input type="checkbox" id="beohql13" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Rename the stage <code><b>Request Rejected</b></code>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        15.
+        <input type="checkbox" id="beohql14" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the "If" statement in the "Transition to stage" section of the Time Off Approval stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 855px;"><img src="images/p1img145.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        16.
+        <input type="checkbox" id="beohql15" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <strong>Go to a stage</strong> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        17.
+        <input type="checkbox" id="beohql16" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the "Go to a stage" action, set "a stage" to <strong>Request Approved</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 496px;"><img src="images/p1img144.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        18.
+        <input type="checkbox" id="beohql17" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor beneath the <b>Else</b> statement.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 892px;"><img src="images/p1img143.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        19.
+        <input type="checkbox" id="beohql18" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Go to Stage</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        20.
+        <input type="checkbox" id="beohql19" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Set "a stage" to <strong>Request Rejected</strong>.</p><p> </p><p>The workflow should now look like this:</p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 793px;"><img src="images/p1img142.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        21.
+        <input type="checkbox" id="beohql20" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor at the beginning of the <b>Request Approved</b> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 956px;"><img src="images/p1img141.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        22.
+        <input type="checkbox" id="beohql21" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Send an Email</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        23.
+        <input type="checkbox" id="beohql22" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Configure the "Send an Email" action by clicking the words <b>these users</b> to open the Define E-mail Message dialog.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 601px;"><img src="images/p1img140.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        24.
+        <input type="checkbox" id="beohql23" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Fill out the Define E-mail Message dialog box. Click the <strong>Address Book</strong> icon next to the To field.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 809px;"><img src="images/p1img139.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        25.
+        <input type="checkbox" id="beohql24" /></div><div class="ExRight" style="vertical-align:baseline;">
+        The Select Users dialog box opens. From the list of users on the left, select <b>User who created current item</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        26.
+        <input type="checkbox" id="beohql25" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add</b> button to add the selection to the Selected Users column. Your Select Users dialog should look like this:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 660px;"><img src="images/p1img138.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        27.
+        <input type="checkbox" id="beohql26" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        28.
+        <input type="checkbox" id="beohql27" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the ellipsis button to the right of the Subject field.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 727px;"><img src="images/p1img137.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        29.
+        <input type="checkbox" id="beohql28" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>The String Builder dialog box opens. Enter the following:</p><p> </p><p><strong><code>Your Time Off Request Has Been Approved</code></strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        30.
+        <input type="checkbox" id="beohql29" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        31.
+        <input type="checkbox" id="beohql30" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place your cursor in the body of the e-mail message.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 700px;"><img src="images/p1img136.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        32.
+        <input type="checkbox" id="beohql31" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Click the <strong>Add or Change Lookup</strong> button and fill in the following fields:</p><p> </p><p>Data source: <strong>Current Item</strong></p><p>Field from source: <strong>Created By</strong></p><p>Return field as: <strong>Display Name</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 612px;"><img src="images/p1img135.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        33.
+        <input type="checkbox" id="beohql32" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        34.
+        <input type="checkbox" id="beohql33" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Press <code>&lt;Enter&gt;</code>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        35.
+        <input type="checkbox" id="beohql34" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Type the following in the e-mail message body:</p><p> </p><p><strong><code>Your request for</code></strong><code> &lt;Space&gt;</code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        36.
+        <input type="checkbox" id="beohql35" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add or Change Lookup</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        37.
+        <input type="checkbox" id="beohql36" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the "Lookup for String" dialog, set the following values:</p><p> </p><p>Data source: <strong>Current Item</strong></p><p>Field from source: <strong>Time Off Hours</strong></p><p>Return field as: <strong>As String</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 574px;"><img src="images/p1img134.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        38.
+        <input type="checkbox" id="beohql37" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        39.
+        <input type="checkbox" id="beohql38" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Back in the e-mail message body, type the following:</p><p> </p><p><code>&lt;Space&gt;<strong> hours beginning on </strong>&lt;Space&gt;</code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        40.
+        <input type="checkbox" id="beohql39" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add or Change Lookup</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        41.
+        <input type="checkbox" id="beohql40" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the "Lookup for String" dialog, set the following values:</p><p> </p><p>Data source: <strong>Current Item</strong></p><p>Field from source: <strong>Time Off Start Date</strong></p><p>Return field as: <strong>Long Date</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 612px;"><img src="images/p1img133.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        42.
+        <input type="checkbox" id="beohql41" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        43.
+        <input type="checkbox" id="beohql42" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Type the following in the e-mail message body:</p><p> </p><p><code>&lt;Space&gt;<strong> and returning on</strong> &lt;Space&gt;</code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        44.
+        <input type="checkbox" id="beohql43" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the <b>Add or Change Lookup</b> button.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        45.
+        <input type="checkbox" id="beohql44" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>In the "Lookup for String" dialog, set the following values:</p><p> </p><p>Data source: <strong>Current Item</strong></p><p>Field from source: <strong>Time Off Return Date</strong></p><p>Return field as: <strong>Long Date</strong></p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 407px;"><img src="images/p1img132.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        46.
+        <input type="checkbox" id="beohql45" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Back in the e-mail message body, type the following:</p><p> </p><p><code>&lt;Space&gt; <strong>has been approved.</strong><br />
+&lt;Enter&gt;<br /><strong>Thank you</strong></code></p><p> </p><p>Your Define E-mail Message dialog should look like this:</p>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 687px;"><img src="images/p1img131.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        47.
+        <input type="checkbox" id="beohql46" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        48.
+        <input type="checkbox" id="beohql47" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the cursor in the <b>Transition to stage</b> section of the Request Approved stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 382px;"><img src="images/p1img130.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        49.
+        <input type="checkbox" id="beohql48" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <strong>Go to a stage</strong> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        50.
+        <input type="checkbox" id="beohql49" /></div><div class="ExRight" style="vertical-align:baseline;">
+        For the "Go to a stage" action, click <strong>a stage</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        51.
+        <input type="checkbox" id="beohql50" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>End of Workflow</b> from the pull-down.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 303px;"><img src="images/p1img129.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        52.
+        <input type="checkbox" id="beohql51" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the orange cursor at the beginning of the <b>Request Rejected</b> stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 336px;"><img src="images/p1img128.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        53.
+        <input type="checkbox" id="beohql52" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <b>Send an Email</b> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        54.
+        <input type="checkbox" id="beohql53" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click the words <b>these users</b> to open the Define E-mail Message dialog.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        55.
+        <input type="checkbox" id="beohql54" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Fill out the Define E-mail Message dialog box with the following:</p><p>To: <strong>User who created current item</strong></p><p>Subject: <code><strong>Your Time Off Request Has Been Rejected</strong></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        56.
+        <input type="checkbox" id="beohql55" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Construct the e-mail body so that it reads like the following:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 788px;"><img src="images/p1img127.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        57.
+        <input type="checkbox" id="beohql56" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        58.
+        <input type="checkbox" id="beohql57" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Place the cursor in the <b>Transition to stage</b> section of the Request Rejected stage.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 421px;"><img src="images/p1img126.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        59.
+        <input type="checkbox" id="beohql58" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Add a <strong>Go to a stage</strong> action.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        60.
+        <input type="checkbox" id="beohql59" /></div><div class="ExRight" style="vertical-align:baseline;">
+        For the "Go to a stage" action, click <strong>a stage</strong>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        61.
+        <input type="checkbox" id="beohql60" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select <b>End of Workflow</b> from the pull-down.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        62.
+        <input type="checkbox" id="beohql61" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Save your workflow.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        63.
+        <input type="checkbox" id="beohql62" /></div><div class="ExRight" style="vertical-align:baseline;">
+        It is good practice to check your workflow for errors before publishing. Click <b>Check for Errors</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 221px;"><img src="images/p1img125.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        64.
+        <input type="checkbox" id="beohql63" /></div><div class="ExRight" style="vertical-align:baseline;">
+        You should get a message letting you know that the workflow does not contain errors. Click <b>OK</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 411px;"><img src="images/p1img124.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        65.
+        <input type="checkbox" id="beohql64" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Next, check the workflow start options by clicking <b>Time Off Request Process</b> in the breadcrumb trail.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 838px;"><img src="images/p1img123.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        66.
+        <input type="checkbox" id="beohql65" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Make sure <b>Start workflow automatically when an item is created</b> in the Start Options section of the page is selected.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        67.
+        <input type="checkbox" id="beohql66" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b> to save your work.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        68.
+        <input type="checkbox" id="beohql67" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Publish the workflow by clicking <b>Publish</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 157px;"><img src="images/p1img122.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exHint.jpg" /></div><div class="ExRight"><i>When you publish a workflow, it is automatically saved.</i></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exMajorStep.jpg" /></div><div class="ExRight"><strong>Testing the time-off request workflow</strong></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        69.
+        <input type="checkbox" id="beohql68" /></div><div class="ExRight" style="vertical-align:baseline;">
+        After the workflow is published, it is time to test. In the Site Objects pane, click <b>Lists and Libraries</b>.
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        70.
+        <input type="checkbox" id="beohql69" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Select the <b>Time Off Requests </b>list.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 675px;"><img src="images/p1img121.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        71.
+        <input type="checkbox" id="beohql70" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Preview in Browser</b> from the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 449px;"><img src="images/p1img120.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        72.
+        <input type="checkbox" id="beohql71" /></div><div class="ExRight" style="vertical-align:baseline;">
+        On the Time Off Requests list in Internet Explorer, click <b>new item</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 483px;"><img src="images/p1img119.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        73.
+        <input type="checkbox" id="beohql72" /></div><div class="ExRight" style="vertical-align:baseline;">
+        <p>Enter the following:</p><p> </p><p>Time Off Type: <strong>Personal</strong></p><p>Time Off Hours: <code><strong>8</strong></code></p><p>Time Off Comment: <code><strong>Surfs up!</strong></code><br />
+Time Off Start Date: <code><em><strong>[The date of this coming Friday]</strong></em></code></p><p>Time Off Return Date: <code><em><strong>[The date of the following Monday]</strong></em></code></p>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        74.
+        <input type="checkbox" id="beohql73" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Click <b>Save</b>.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 663px;"><img src="images/p1img118.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>The Time Off Requests list now has a new column that displays the current stage in our workflow, Time Off Approval.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 767px;"><img src="images/p1img117.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exCheckPoint.jpg" /></div><div class="ExRight"><i>Check your inbox in Outlook. You will receive an e-mail from SharePoint assigning you a new task to review the time-off request you just added.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        75.
+        <input type="checkbox" id="beohql74" /></div><div class="ExRight" style="vertical-align:baseline;">
+        In the e-mail, click the hyperlink <b>Time Off Request: Please Review</b> to go to the assigned task.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 614px;"><img src="images/p1img116.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exInfo.jpg" /></div><div class="ExRight"><i>Internet Explorer will take you to the Time Off Request assignment. Assignments are tasks stored in the Time Off Request Process Tasks list.</i></div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        76.
+        <input type="checkbox" id="beohql75" /></div><div class="ExRight" style="vertical-align:baseline;">
+        On the Time Off Request task, view the original time-off request by clicking the <b>Related Items</b> link.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 589px;"><img src="images/p1img115.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        77.
+        <input type="checkbox" id="beohql76" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Review the original request, and click the <b>Back</b> button in Internet Explorer.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 774px;"><img src="images/p1img114.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        78.
+        <input type="checkbox" id="beohql77" /></div><div class="ExRight" style="vertical-align:baseline;">
+        To approve the request, click <b>Edit Item</b> in the ribbon.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 408px;"><img src="images/p1img113.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        79.
+        <input type="checkbox" id="beohql78" /></div><div class="ExRight" style="vertical-align:baseline;">
+        On the Time Off Request edit page, click the <b>Approved</b> button to approve the request.
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 686px;"><img src="images/p1img112.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="RightImages"><img src="images/exCheckPoint.jpg" /></div><div class="ExRight"><i>The Time Off Request task will show as complete in the task list.</i></div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 427px;"><img src="images/p1img111.png" /></div>
+      </div></div><div class="ExRow"><div class="ExLeft" style="vertical-align:baseline;">
+        80.
+        <input type="checkbox" id="beohql79" /></div><div class="ExRight" style="vertical-align:baseline;">
+        Close Internet Explorer and check your inbox in Outlook. You will receive a message like this:
+      </div></div><div class="ExRow"><div class="ExLeft"><img src="images/exPadding.jpg" /></div><div class="ExRight">
+        <div class="MediaDiv" style="max-width: 715px;"><img src="images/p1img110.png" /></div>
+      </div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exFinish.jpg" /></div><div class="ExRight"><strong>Congratulations! You have automated the management of time-off requests for your department!</strong></div></div><div class="ExRow" style="padding-top:24px;"><div class="ExLeft"><img src="images/exBonus.jpg" /></div><div class="ExRight"><strong><strong>Create a new time-off request, but this time, reject the request.</strong></strong></div></div><div class="ExRow"><div class="ExCentredText"><img src="images/ExStop.jpg" /><br /><strong><i>This is the end of the exercise.</i></strong></div></div>
+  </div>
+  <div class="ExFooter"><br/>Viewer version 1.0.1505.28</div>
+</form>
+</body>
+</html>
+
+
